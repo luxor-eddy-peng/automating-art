@@ -1,4 +1,6 @@
 :root {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
   --bg: #e9edf3;
   --stage: #ffffff;
   --ink: #0f172a;
@@ -116,7 +118,15 @@ body,
 body {
   background: var(--stage);
   color: var(--ink);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* Form controls don't inherit the page font by default. */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 /* Deck shell */
@@ -208,7 +218,7 @@ body {
 .nav-btn {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 2px;
   border: 1px solid var(--chrome-line);
   background: var(--chrome-btn);
   color: var(--chrome-btn-ink);
@@ -260,7 +270,7 @@ body {
   gap: 6px;
   margin-left: 6px;
   padding: 8px 12px;
-  border-radius: 8px;
+  border-radius: 2px;
   border: 1px solid var(--chrome-line);
   background: transparent;
   color: var(--chrome-ink);
@@ -281,7 +291,7 @@ body {
   max-height: 50vh;
   overflow: auto;
   padding: 16px 18px;
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--notes-bg);
   color: var(--notes-ink);
   border: 1px solid var(--chrome-line);
@@ -349,7 +359,7 @@ body {
 .card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 22px 24px;
 }
 
@@ -446,7 +456,7 @@ body {
 .task-letter {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 2px;
   background: var(--blue);
   color: var(--on-blue);
   font-weight: 700;
@@ -459,7 +469,7 @@ body {
 
 .banner {
   padding: 14px 20px;
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 20px;
   font-weight: 600;
 }
@@ -474,12 +484,26 @@ body {
   color: var(--ok);
 }
 
+.banner.link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  border: 1px solid var(--blue-line);
+  text-decoration: none;
+}
+
+.banner.link:hover {
+  border-color: var(--blue);
+}
+
 code {
-  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-family: var(--font-mono);
   font-size: 0.92em;
   background: var(--code-bg);
   padding: 1px 6px;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .bullets {
@@ -509,7 +533,7 @@ code {
   gap: 16px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: 4px;
   padding: 20px 22px;
 }
 
@@ -526,7 +550,7 @@ code {
 .person {
   width: 96px;
   height: 96px;
-  border-radius: 8px;
+  border-radius: 2px;
   border: 2px dashed var(--ph-border);
   background: var(--stage);
   color: var(--muted);
@@ -547,7 +571,7 @@ code {
 
 .placeholder {
   border: 2px dashed var(--ph-border);
-  border-radius: 12px;
+  border-radius: 4px;
   background: repeating-linear-gradient(
     -45deg,
     var(--ph-a),
@@ -577,6 +601,279 @@ code {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ph-tag);
+}
+
+/* Poster drop zones */
+
+.poster-grid {
+  min-height: 0;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.poster-drop {
+  position: relative;
+  min-height: 0;
+  border: 2px dashed var(--ph-border);
+  border-radius: 4px;
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.poster-drop.filled {
+  border-style: solid;
+  border-color: var(--line);
+}
+
+.poster-drop.dragging {
+  border-color: var(--blue);
+  border-style: dashed;
+  background: var(--blue-soft);
+}
+
+.poster-drop-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+button.poster-drop-empty:hover {
+  background: var(--blue-soft);
+}
+
+.poster-drop-empty svg {
+  color: var(--blue);
+  margin-bottom: 4px;
+}
+
+.poster-drop-hint {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.poster-drop img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.poster-drop-bar {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 24px 10px 10px 14px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: #ffffff;
+}
+
+.poster-drop-label {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.poster-drop-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.poster-drop-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 2px;
+  background: rgba(15, 23, 42, 0.55);
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.poster-drop-actions button:hover {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.poster-drop-actions button.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--on-blue);
+}
+
+.poster-drop-actions button.primary:hover {
+  filter: brightness(1.1);
+}
+
+/* Enlarged poster */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.85);
+  animation: lightbox-in 0.18s ease-out;
+}
+
+.lightbox figure {
+  margin: 0;
+}
+
+.lightbox img {
+  display: block;
+  max-width: calc(100vw - 80px);
+  max-height: calc(100vh - 180px);
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox img.smooth {
+  transition: transform 0.18s ease-out;
+}
+
+.lightbox img.zoomed {
+  cursor: grab;
+}
+
+.lightbox img.panning {
+  cursor: grabbing;
+}
+
+.lightbox img {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+}
+
+.lightbox figcaption {
+  position: fixed;
+  top: 30px;
+  left: 32px;
+  z-index: 1;
+  padding: 6px 12px;
+  border-radius: 2px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #e2e8f0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.lightbox-close:hover {
+  background: rgba(51, 65, 85, 0.95);
+}
+
+.lightbox-zoom {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(15, 23, 42, 0.85);
+}
+
+.lightbox-zoom button {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.lightbox-zoom button.lightbox-fit {
+  font-size: 15px;
+  font-weight: 600;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0 2px 2px 0;
+  margin-left: 4px;
+}
+
+.lightbox-zoom button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.lightbox-zoom button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.lightbox-zoom-level {
+  min-width: 56px;
+  color: #e2e8f0;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox {
+    animation: none;
+  }
+
+  .lightbox img.smooth {
+    transition: none;
+  }
 }
 
 /* Cover */
@@ -658,7 +955,7 @@ code {
 .schedule-num {
   width: 36px;
   height: 36px;
-  border-radius: 8px;
+  border-radius: 2px;
   display: grid;
   place-items: center;
   background: var(--blue);
@@ -732,11 +1029,6 @@ code {
   outline-offset: -2px;
 }
 
-.grid-table td.blank {
-  min-width: 80px;
-  color: var(--muted);
-}
-
 .grid-table.closing td {
   font-size: 24px;
   padding: 18px 22px;
@@ -745,6 +1037,172 @@ code {
 .grid-table.closing td:first-child {
   width: 45%;
   font-weight: 600;
+}
+
+.grid-table.closing .job-detail {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Model picker */
+
+/* height: 1px lets the trigger fill the cell with height: 100%. */
+.grid-table.closing td.picker-cell {
+  position: relative;
+  padding: 0;
+  height: 1px;
+}
+
+.picker-trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  padding: 12px 18px 12px 22px;
+  cursor: pointer;
+}
+
+.picker-trigger:hover,
+.picker-trigger.open {
+  background: var(--blue-soft);
+}
+
+.picker-trigger:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+}
+
+.picker-placeholder {
+  flex: 1;
+  color: var(--ph-tag);
+}
+
+.picker-caret {
+  flex-shrink: 0;
+  font-size: 18px;
+  color: var(--muted);
+  transition: transform 150ms;
+}
+
+.picker-trigger.open .picker-caret {
+  transform: rotate(180deg);
+}
+
+.pills {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 6px 5px 12px;
+  border: 1px solid var(--blue-line);
+  border-radius: 2px;
+  background: var(--blue-soft);
+  color: var(--blue);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.pill button {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pill button:hover {
+  background: var(--blue);
+  color: var(--on-blue);
+}
+
+.picker-menu {
+  position: absolute;
+  top: calc(100% - 6px);
+  left: 12px;
+  z-index: 10;
+  min-width: 260px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--stage);
+  box-shadow: 0 12px 32px var(--shadow);
+  animation: picker-in 120ms ease-out;
+}
+
+.picker-menu.up {
+  top: auto;
+  bottom: calc(100% - 6px);
+}
+
+.picker-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.picker-menu button:hover,
+.picker-menu button:focus-visible {
+  background: var(--blue-soft);
+  outline: none;
+}
+
+.picker-check {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--ph-border);
+  border-radius: 2px;
+  font-size: 14px;
+}
+
+.picker-menu button[aria-selected='true'] .picker-check {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: var(--on-blue);
+}
+
+@keyframes picker-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .picker-menu {
+    animation: none;
+  }
+
+  .picker-caret {
+    transition: none;
+  }
 }
 
 /* Techniques */
@@ -798,7 +1256,7 @@ code {
   min-width: 26px;
   height: 22px;
   padding: 0 4px;
-  border-radius: 6px;
+  border-radius: 2px;
   background: var(--blue);
   color: var(--on-blue);
   font-size: 12px;
@@ -888,7 +1346,7 @@ code {
   /* 2:3, the proportions of a 24 × 36 in poster. */
   width: 280px;
   height: 420px;
-  border-radius: 6px;
+  border-radius: 4px;
   background: var(--blue);
   color: var(--on-blue);
   display: flex;

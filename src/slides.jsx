@@ -1,8 +1,38 @@
 // Slide content, drawn from ai-imagery-session-v2.md.
 // Anything marked <Placeholder> still needs real content before the session.
 
-import { useState } from 'react'
-import { ArrowRight, CheckCircle, User } from '@phosphor-icons/react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import {
+  ArrowSquareOut,
+  ArrowsClockwise,
+  ArrowsOut,
+  CaretDown,
+  Check,
+  CheckCircle,
+  FolderOpen,
+  MagnifyingGlassMinus,
+  MagnifyingGlassPlus,
+  Trash,
+  UploadSimple,
+  User,
+  X,
+} from '@phosphor-icons/react'
+
+const ROUND_1_DRIVE_URL =
+  'https://drive.google.com/drive/folders/1lvAFBUg1C_cRFGQGpqfKEF5PD2Z0iKcj?usp=sharing'
+const ROUND_2_DRIVE_URL =
+  'https://drive.google.com/drive/folders/1lM3RSKAUs0Da7HMsSj2n6Um3krlnNCi5?usp=drive_link'
+
+function DriveLink({ href }) {
+  return (
+    <a className="banner link" href={href} target="_blank" rel="noreferrer">
+      <FolderOpen size={24} weight="bold" />
+      <span>Shared Google Drive folder</span>
+      <ArrowSquareOut size={20} weight="bold" />
+    </a>
+  )
+}
 
 function Placeholder({ children, tall }) {
   return (
@@ -29,6 +59,462 @@ function CheckCell({ id, label }) {
         {checked && <CheckCircle weight="fill" />}
       </button>
     </td>
+  )
+}
+
+// Same as checkedCells: picks survive moving between slides but clear on refresh.
+const pickedCells = new Map()
+
+// A multi-select of the six models. Picks show as pills, kept in MODELS order.
+function ModelPickerCell({ id, label }) {
+  const [picked, setPicked] = useState(() => pickedCells.get(id) ?? [])
+  const [open, setOpen] = useState(false)
+  const [up, setUp] = useState(false)
+  const cell = useRef(null)
+  const trigger = useRef(null)
+  const menu = useRef(null)
+
+  const toggle = (name) => {
+    const next = MODELS.map((m) => m.name).filter((n) => (n === name) !== picked.includes(n))
+    pickedCells.set(id, next)
+    setPicked(next)
+  }
+
+  const openMenu = () => {
+    setUp(false)
+    setOpen(true)
+  }
+
+  // Lower rows would run off the bottom of the slide, so flip those menus upward.
+  useLayoutEffect(() => {
+    if (!open) return
+    const stage = cell.current.closest('.stage').getBoundingClientRect()
+    if (menu.current.getBoundingClientRect().bottom > stage.bottom - 8) setUp(true)
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const onPointerDown = (e) => {
+      if (!cell.current.contains(e.target)) setOpen(false)
+    }
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return
+      setOpen(false)
+      trigger.current.focus()
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  const onTriggerKey = (e) => {
+    if (e.target !== trigger.current) return
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      openMenu()
+      requestAnimationFrame(() => menu.current?.querySelector('button')?.focus())
+    }
+  }
+
+  const onMenuKey = (e) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+    e.preventDefault()
+    const options = [...menu.current.querySelectorAll('button')]
+    const i = options.indexOf(document.activeElement)
+    const step = e.key === 'ArrowDown' ? 1 : -1
+    options[(i + step + options.length) % options.length].focus()
+  }
+
+  return (
+    <td className="picker-cell" ref={cell}>
+      <div
+        ref={trigger}
+        className={`picker-trigger ${open ? 'open' : ''}`}
+        role="button"
+        tabIndex={0}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={label}
+        onClick={() => (open ? setOpen(false) : openMenu())}
+        onKeyDown={onTriggerKey}
+      >
+        {picked.length ? (
+          <div className="pills">
+            {picked.map((name) => (
+              <span className="pill" key={name}>
+                {name}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggle(name)
+                  }}
+                  aria-label={`Remove ${name}`}
+                >
+                  <X weight="bold" />
+                </button>
+              </span>
+            ))}
+          </div>
+        ) : (
+          <span className="picker-placeholder">Pick the tools</span>
+        )}
+        <CaretDown className="picker-caret" weight="bold" />
+      </div>
+      {open && (
+        <ul
+          ref={menu}
+          className={`picker-menu ${up ? 'up' : ''}`}
+          role="listbox"
+          aria-multiselectable="true"
+          aria-label={label}
+          onKeyDown={onMenuKey}
+        >
+          {MODELS.map((m) => {
+            const on = picked.includes(m.name)
+            return (
+              <li key={m.name} role="none">
+                <button role="option" aria-selected={on} onClick={() => toggle(m.name)}>
+                  <span className="picker-check">{on && <Check weight="bold" />}</span>
+                  {m.name}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </td>
+  )
+}
+
+// Uploaded posters. Unlike the cells above, these are also saved in the browser's IndexedDB,
+// so they survive a refresh and only go when removed. `posters` caches what's loaded, keyed
+// by group, each entry { url, name } with url an object URL.
+const posters = new Map()
+
+const POSTER_STORE = 'posters'
+let posterDb
+
+function openPosterDb() {
+  posterDb ??= new Promise((resolve, reject) => {
+    const req = indexedDB.open('automating-art', 1)
+    req.onupgradeneeded = () => req.result.createObjectStore(POSTER_STORE)
+    req.onsuccess = () => resolve(req.result)
+    req.onerror = () => reject(req.error)
+  })
+  return posterDb
+}
+
+// Runs one request against the store and resolves with its result once the write commits.
+async function posterStore(mode, run) {
+  const db = await openPosterDb()
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(POSTER_STORE, mode)
+    const req = run(tx.objectStore(POSTER_STORE))
+    tx.oncomplete = () => resolve(req.result)
+    tx.onerror = () => reject(tx.error)
+  })
+}
+
+// Storage can be unavailable (private windows, blocked site data). Uploads still work then,
+// they just don't outlast the page.
+const savePoster = (id, file) => posterStore('readwrite', (s) => s.put(file, id)).catch(() => {})
+const loadPoster = (id) => posterStore('readonly', (s) => s.get(id)).catch(() => undefined)
+const deletePoster = (id) => posterStore('readwrite', (s) => s.delete(id)).catch(() => {})
+
+// Some browsers report an empty MIME type for formats they don't know (HEIC on Chrome, say),
+// so fall back to the file extension.
+const IMAGE_EXT = /\.(apng|avif|bmp|gif|heic|heif|ico|jfif|jpe?g|jxl|png|svg|tiff?|webp)$/i
+
+function isImage(file) {
+  return file.type.startsWith('image/') || IMAGE_EXT.test(file.name)
+}
+
+function PosterDrop({ id, label }) {
+  const [poster, setPoster] = useState(() => posters.get(id) ?? null)
+  const [dragging, setDragging] = useState(false)
+  const [error, setError] = useState('')
+  const [broken, setBroken] = useState(false)
+  const [enlarged, setEnlarged] = useState(false)
+  const input = useRef(null)
+
+  useEffect(() => {
+    if (posters.has(id)) return
+    let live = true
+    loadPoster(id).then((file) => {
+      // Skip if this zone unmounted, or something was dropped while the load was in flight.
+      if (!live || !file || posters.has(id)) return
+      const next = { url: URL.createObjectURL(file), name: file.name }
+      posters.set(id, next)
+      setPoster(next)
+    })
+    return () => {
+      live = false
+    }
+  }, [id])
+
+  const accept = (file) => {
+    if (!file) return
+    if (!isImage(file)) {
+      setError(`${file.name} isn’t an image`)
+      return
+    }
+    const prev = posters.get(id)
+    if (prev) URL.revokeObjectURL(prev.url)
+    const next = { url: URL.createObjectURL(file), name: file.name }
+    posters.set(id, next)
+    savePoster(id, file)
+    setPoster(next)
+    setError('')
+    setBroken(false)
+  }
+
+  const remove = () => {
+    URL.revokeObjectURL(poster.url)
+    posters.delete(id)
+    deletePoster(id)
+    setPoster(null)
+    setBroken(false)
+  }
+
+  const onDrop = (e) => {
+    e.preventDefault()
+    setDragging(false)
+    accept(e.dataTransfer.files[0])
+  }
+
+  const onDragOver = (e) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'copy'
+    setDragging(true)
+  }
+
+  const browse = () => input.current.click()
+
+  return (
+    <div
+      className={`poster-drop ${dragging ? 'dragging' : ''} ${poster ? 'filled' : ''}`}
+      onDragOver={onDragOver}
+      onDragLeave={() => setDragging(false)}
+      onDrop={onDrop}
+    >
+      <input
+        ref={input}
+        type="file"
+        accept="image/*,.heic,.heif,.jxl"
+        hidden
+        onChange={(e) => {
+          accept(e.target.files[0])
+          e.target.value = ''
+        }}
+      />
+      {poster ? (
+        <>
+          {broken ? (
+            <div className="poster-drop-empty">
+              <span>{poster.name}</span>
+              <span className="poster-drop-hint">This browser can’t preview this format</span>
+            </div>
+          ) : (
+            <img src={poster.url} alt={label} onError={() => setBroken(true)} />
+          )}
+          <div className="poster-drop-bar">
+            <span className="poster-drop-label">{label}</span>
+            <div className="poster-drop-actions">
+              <button onClick={remove} aria-label={`Remove ${label}`} title="Remove">
+                <Trash weight="bold" />
+              </button>
+              <button onClick={browse} aria-label={`Replace ${label}`} title="Replace">
+                <ArrowsClockwise weight="bold" />
+              </button>
+              {!broken && (
+                <button className="primary" onClick={() => setEnlarged(true)}>
+                  <ArrowsOut weight="bold" /> Enlarge
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <button className="poster-drop-empty" onClick={browse}>
+          <UploadSimple size={30} weight="bold" />
+          <span>{label}</span>
+          <span className="poster-drop-hint">{error || 'Drop an image or click to browse'}</span>
+        </button>
+      )}
+      {enlarged && poster && (
+        <Lightbox src={poster.url} label={label} onClose={() => setEnlarged(false)} />
+      )}
+    </div>
+  )
+}
+
+const MIN_ZOOM = 0.5
+const MAX_ZOOM = 8
+const ZOOM_STEP = 1.25
+
+// Rendered into <body> so it covers the whole window rather than the scaled slide stage.
+// Zoom is relative to the image fitted on screen (1 = fit). Wheel, pinch and the buttons
+// zoom toward a point that stays put; dragging pans once zoomed in.
+function Lightbox({ src, label, onClose }) {
+  const [view, setViewState] = useState({ zoom: 1, x: 0, y: 0 })
+  const [smooth, setSmooth] = useState(true)
+  const [panning, setPanning] = useState(false)
+  const img = useRef(null)
+  const drag = useRef(null)
+  // Mirrors `view` so rapid wheel events each build on the last one, not a stale render.
+  const viewRef = useRef(view)
+  const setView = (next) => {
+    viewRef.current = next
+    setViewState(next)
+  }
+
+  // Zoom to `next`, keeping the screen point (px, py) over the same spot of the image.
+  // With no point given, zoom around the image's centre.
+  const zoomTo = useCallback((next, px, py, animate = true) => {
+    const v = viewRef.current
+    const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next))
+    setSmooth(animate)
+    if (zoom <= 1) {
+      setView({ zoom, x: 0, y: 0 })
+      return
+    }
+    const r = img.current.getBoundingClientRect()
+    // The image's untransformed centre: the transform scales around it, then translates.
+    const cx = r.left + r.width / 2 - v.x
+    const cy = r.top + r.height / 2 - v.y
+    const qx = (px ?? cx + v.x) - cx
+    const qy = (py ?? cy + v.y) - cy
+    const k = zoom / v.zoom
+    setView({ zoom, x: qx - k * (qx - v.x), y: qy - k * (qy - v.y) })
+  }, [])
+
+  const zoomBy = useCallback(
+    (factor, px, py, animate) => zoomTo(viewRef.current.zoom * factor, px, py, animate),
+    [zoomTo],
+  )
+
+  useEffect(() => {
+    // Capture phase, so these keys act on the image and the deck's own shortcuts
+    // (arrows, N, T) don't fire underneath it.
+    const onKey = (e) => {
+      e.stopPropagation()
+      if (e.key === 'Escape') onClose()
+      else if (e.key === '+' || e.key === '=') zoomBy(ZOOM_STEP)
+      else if (e.key === '-' || e.key === '_') zoomBy(1 / ZOOM_STEP)
+      else if (e.key === '0') zoomTo(1)
+    }
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
+  }, [onClose, zoomBy, zoomTo])
+
+  useEffect(() => {
+    // Not a React onWheel: that listener is passive, and a trackpad pinch would zoom the page.
+    const onWheel = (e) => {
+      e.preventDefault()
+      // Pinch arrives as ctrl+wheel with small deltas, so it gets a stronger response.
+      const factor = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.002))
+      zoomBy(factor, e.clientX, e.clientY, false)
+    }
+    window.addEventListener('wheel', onWheel, { passive: false })
+    return () => window.removeEventListener('wheel', onWheel)
+  }, [zoomBy])
+
+  const onPointerDown = (e) => {
+    if (view.zoom <= 1) return
+    e.preventDefault()
+    e.currentTarget.setPointerCapture(e.pointerId)
+    drag.current = { startX: e.clientX, startY: e.clientY, x: view.x, y: view.y }
+    setSmooth(false)
+    setPanning(true)
+  }
+
+  const onPointerMove = (e) => {
+    const d = drag.current
+    if (!d) return
+    setView({ ...viewRef.current, x: d.x + e.clientX - d.startX, y: d.y + e.clientY - d.startY })
+  }
+
+  const endDrag = () => {
+    drag.current = null
+    setPanning(false)
+  }
+
+  const zoomed = view.zoom > 1
+
+  return createPortal(
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label={label} onClick={onClose}>
+      <button className="lightbox-close" onClick={onClose} aria-label="Close">
+        <X weight="bold" />
+      </button>
+      <figure onClick={(e) => e.stopPropagation()}>
+        <img
+          ref={img}
+          src={src}
+          alt={label}
+          draggable={false}
+          className={`${smooth ? 'smooth' : ''} ${zoomed ? 'zoomed' : ''} ${panning ? 'panning' : ''}`}
+          style={{ transform: `translate(${view.x}px, ${view.y}px) scale(${view.zoom})` }}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onDoubleClick={(e) => (zoomed ? zoomTo(1) : zoomTo(2, e.clientX, e.clientY))}
+        />
+        <figcaption>{label}</figcaption>
+      </figure>
+      <div className="lightbox-zoom" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={() => zoomBy(1 / ZOOM_STEP)}
+          disabled={view.zoom <= MIN_ZOOM}
+          aria-label="Zoom out"
+          title="Zoom out (−)"
+        >
+          <MagnifyingGlassMinus weight="bold" />
+        </button>
+        <span className="lightbox-zoom-level">{Math.round(view.zoom * 100)}%</span>
+        <button
+          onClick={() => zoomBy(ZOOM_STEP)}
+          disabled={view.zoom >= MAX_ZOOM}
+          aria-label="Zoom in"
+          title="Zoom in (+)"
+        >
+          <MagnifyingGlassPlus weight="bold" />
+        </button>
+        <button
+          className="lightbox-fit"
+          onClick={() => zoomTo(1)}
+          disabled={view.zoom === 1}
+          title="Fit to screen (0)"
+        >
+          Fit
+        </button>
+      </div>
+    </div>,
+    document.body,
+  )
+}
+
+// A drop that misses a zone would otherwise make the browser open the file and leave the deck.
+function PosterGrid() {
+  useEffect(() => {
+    const block = (e) => e.preventDefault()
+    window.addEventListener('dragover', block)
+    window.addEventListener('drop', block)
+    return () => {
+      window.removeEventListener('dragover', block)
+      window.removeEventListener('drop', block)
+    }
+  }, [])
+
+  return (
+    <div className="grid-3 poster-grid">
+      {MODELS.map((m) => (
+        <PosterDrop key={m.name} id={m.group} label={`Group ${m.group} · ${m.name}`} />
+      ))}
+    </div>
   )
 }
 
@@ -74,32 +560,32 @@ const PROMPT_PARTS = [
   { name: 'Exact text', how: 'Put any words in quotes, and expect to re-roll.' },
 ]
 
-// The working tanuki sticker prompt, split into the parts above (part 6 has no text here).
-const TANUKI = [
+// The Old Fashioned prompt, split into the parts above (part 6 has no text here).
+const OLD_FASHIONED = [
   {
     part: 0,
-    text: 'A sticker illustration of a white tanuki sitting upright.',
+    text: 'A moody photo of an Old Fashioned on a side table beside a leather armchair.',
     note: 'Lead with the medium and the subject.',
   },
   {
     part: 1,
-    text: 'Stocky, low-slung body, short blunt muzzle, small rounded ears set low on the head, short thick tail with no rings, shaggy fur ruffs on the cheeks.',
-    note: '“Make it clearly a tanuki” failed. Naming the anatomy worked.',
+    text: 'A heavy rocks glass with one large clear ice cube, amber whisky and an orange peel twist. A worn brown Chesterfield with buttoned tufting.',
+    note: '“An Old Fashioned” isn’t enough. Describe the glass and garnish.',
   },
   {
     part: 2,
-    text: 'Keep the dark mask around the eyes.',
-    note: '“White” fights the dark mask that makes it a tanuki, so say the mask stays.',
+    text: 'Keep the drink glowing amber and the ice clear.',
+    note: '“Moody” darkens everything, the drink included.',
   },
   {
     part: 3,
-    text: 'Not a fox: no long snout, no white-tipped tail. Not a raccoon: no ringed tail.',
-    note: 'Rule out both wrong answers by their features.',
+    text: 'Not a martini: no stemmed glass, no olive. No crushed ice, no straw, no people.',
+    note: '“Cocktail” invites martini glasses and straws, so rule them out.',
   },
   {
     part: 4,
-    text: 'Flat colours, thick white outline, plain background.',
-    note: 'The finish that makes it printable as a sticker.',
+    text: 'Warm lamplight, shallow depth of field, dark wood-panelled room.',
+    note: 'The lighting and setting that make it feel like a study.',
   },
 ]
 
@@ -262,19 +748,22 @@ export const slides = [
     section: 'Round 1 · 15 min',
     title: 'The prompts',
     body: (
-      <div className="prompt-rows">
-        {TASKS.map((t, i) => (
-          <div className="prompt-row" key={t.name}>
-            <div className="task-letter">{num(i)}</div>
-            <div>
-              <h3>{t.name}</h3>
-              <p className="prompt-full">“{t.prompt}”</p>
-              <p className="prompt-edit">
-                <strong>Then edit:</strong> {t.edit}
-              </p>
+      <div className="stack">
+        <div className="prompt-rows">
+          {TASKS.map((t, i) => (
+            <div className="prompt-row" key={t.name}>
+              <div className="task-letter">{num(i)}</div>
+              <div>
+                <h3>{t.name}</h3>
+                <p className="prompt-full">“{t.prompt}”</p>
+                <p className="prompt-edit">
+                  <strong>Then edit:</strong> {t.edit}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <DriveLink href={ROUND_1_DRIVE_URL} />
       </div>
     ),
     notes:
@@ -339,16 +828,16 @@ export const slides = [
   },
   {
     section: 'Strategy meeting · 10 min',
-    title: 'Worked example: the white tanuki',
+    title: 'Worked example: the Old Fashioned',
     body: (
       <div className="stack">
         <p className="muted">
-          First try: “Make it clearly a tanuki, not a fox.” It failed because it assumed the model
-          already knew what a tanuki looks like. The prompt that worked:
+          “An Old Fashioned next to a leather chair” tends to come back in a martini glass, over
+          crushed ice, or in a crowded bar. The prompt that works:
         </p>
         <div className="annotated">
           <ol className="annotations">
-            {TANUKI.map((seg) => (
+            {OLD_FASHIONED.map((seg) => (
               <li key={seg.part}>
                 <span className="seg-num">{num(seg.part)}</span>
                 <div>
@@ -361,13 +850,13 @@ export const slides = [
               <span className="seg-num">06</span>
               <div>
                 <strong>Reference image</strong>
-                <p>Attach a photo of a real tanuki. It locks the anatomy faster than any wording.</p>
+                <p>One photo of the drink, one of the chair. They lock the look faster than any wording.</p>
               </div>
             </li>
           </ol>
           <div className="stack">
             <p className="annotated-prompt">
-              {TANUKI.map((seg, i) => {
+              {OLD_FASHIONED.map((seg, i) => {
                 // Keep the marker on the same line as the first word.
                 const [first, ...rest] = seg.text.split(' ')
                 return (
@@ -381,9 +870,14 @@ export const slides = [
                 )
               })}
             </p>
-            <Placeholder tall>
-              <span className="seg-num">06</span> Reference image of a tanuki
-            </Placeholder>
+            <div className="grid-2">
+              <Placeholder tall>
+                <span className="seg-num">06</span> The Old Fashioned
+              </Placeholder>
+              <Placeholder tall>
+                <span className="seg-num">06</span> The leather chair
+              </Placeholder>
+            </div>
           </div>
         </div>
       </div>
@@ -428,6 +922,7 @@ export const slides = [
             Brand reference pack on the shared board: Tenki blue, the existing 24 × 36 poster, the
             sticker artwork.
           </p>
+          <DriveLink href={ROUND_2_DRIVE_URL} />
         </div>
         <div className="poster-frame">
           <div className="poster">
@@ -444,13 +939,7 @@ export const slides = [
     section: 'Vote and wrap-up · 10 min',
     title: 'Vote and winners',
     body: (
-      <div className="grid-3">
-        {MODELS.map((m) => (
-          <Placeholder key={m.name}>
-            Group {m.group} poster · {m.name}
-          </Placeholder>
-        ))}
-      </div>
+      <PosterGrid />
     ),
     notes: 'Voting method and prize are still to be decided.',
   },
@@ -462,22 +951,22 @@ export const slides = [
         <table className="grid-table closing">
           <tbody>
             {[
-              'Text in the image',
-              'A consistent set',
-              'Exact compliance',
-              'Fixing what you already have',
-              'Everything else',
-            ].map((job) => (
+              ['Text in the image', 'Headlines and labels that have to be spelled exactly right'],
+              ['A consistent set', 'Several images in one shared style, like a poster series'],
+              ['Exact compliance', 'Doing precisely what the prompt asks: colours, counts, layout'],
+              ['Fixing what you already have', 'Changing one thing in an image and leaving the rest alone'],
+              ['Everything else', 'General images where no single strength decides it'],
+            ].map(([job, detail]) => (
               <tr key={job}>
-                <td>{job}</td>
-                <td className="blank">
-                  <ArrowRight weight="fill" />
+                <td>
+                  {job}
+                  <span className="job-detail">{detail}</span>
                 </td>
+                <ModelPickerCell id={job} label={`Tools for ${job.toLowerCase()}`} />
               </tr>
             ))}
           </tbody>
         </table>
-        <p className="muted">Filled in live from the room’s findings.</p>
       </div>
     ),
     notes:
@@ -511,23 +1000,13 @@ export const slides = [
   },
   {
     section: 'Vote and wrap-up · 10 min',
-    title: 'The licensing footnote',
+    title: 'Automating visuals further with MCPs',
     body: (
       <div className="stack">
-        <p className="lead">
-          Every free tier we used today is non-commercial. Nothing from this session ships as-is.
-        </p>
-        <div className="card">
-          <h3>Example: Recraft’s free plan</h3>
-          <p>
-            Recraft owns the images, publishes them to its public community gallery, and doesn’t
-            license them for commercial use.
-          </p>
-        </div>
-        <p>We’ll regenerate the winning poster on a paid account for about two dollars.</p>
+        <Placeholder tall>Scenario MCP: what it is and how we’d use it</Placeholder>
       </div>
     ),
-    notes: 'If you run short on time, don’t cut this slide. It’s what stops someone shipping a retreat output next week.',
+    notes: 'Placeholder. Content for this slide is still to be written.',
   },
   {
     title: null,

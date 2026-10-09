@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ArrowLeft, ArrowRight, Moon, Notepad, Sun } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowLineLeft, ArrowLineRight, ArrowRight, Moon, Notepad, Sun } from '@phosphor-icons/react'
 import { slides } from './slides.jsx'
 
 const STAGE_W = 1280
@@ -84,6 +84,8 @@ export default function App() {
   useEffect(() => {
     const onKey = (e) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return
+      // Let typing in a slide's inputs work without changing slides or toggling notes/theme.
+      if (e.target.closest('input, textarea, [contenteditable="true"]')) return
       switch (e.key) {
         case 'ArrowRight':
         case 'PageDown':
@@ -137,6 +139,15 @@ export default function App() {
             <div className="controls">
               <button
                 className="nav-btn"
+                onClick={() => setIndex(0)}
+                disabled={atStart}
+                aria-label="First slide"
+                title="First slide (Home)"
+              >
+                <ArrowLineLeft weight="bold" />
+              </button>
+              <button
+                className="nav-btn"
                 onClick={() => go(-1)}
                 disabled={atStart}
                 aria-label="Previous slide"
@@ -159,6 +170,15 @@ export default function App() {
                 aria-label="Next slide"
               >
                 <ArrowRight weight="fill" />
+              </button>
+              <button
+                className="nav-btn"
+                onClick={() => setIndex(slides.length - 1)}
+                disabled={atEnd}
+                aria-label="Last slide"
+                title="Last slide (End)"
+              >
+                <ArrowLineRight weight="bold" />
               </button>
               <button
                 className={`notes-btn ${showNotes ? 'active' : ''}`}
