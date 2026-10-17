@@ -1,16 +1,16 @@
 // Slide content, drawn from ai-imagery-session-v2.md.
-// Anything marked <Placeholder> still needs real content before the session.
 
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
+  ArrowRight,
   ArrowSquareOut,
   ArrowsClockwise,
   ArrowsOut,
-  CaretDown,
   Check,
-  CheckCircle,
-  FolderOpen,
+  Copy,
+  DownloadSimple,
+  Images,
   MagnifyingGlassMinus,
   MagnifyingGlassPlus,
   Trash,
@@ -18,180 +18,89 @@ import {
   User,
   X,
 } from '@phosphor-icons/react'
+import luxorLogo from './assets/luxor-logo.svg'
+import luxorLogoLight from './assets/luxor-logo-light.svg'
+import promptOldFashioned from './assets/prompt-old-fashioned.jpg'
+import demoWithReference from './assets/demo-with-reference-chesterfield.jpg'
+import referenceDrink from './assets/reference-drink.jpg'
+import referenceChair from './assets/reference-chair.jpg'
+import wildAmberSilk from './assets/wild-amber-silk.png'
+import glassNotebook from './assets/glass-notebook.webp'
+import glassScales from './assets/glass-scales.webp'
+import glassMiners from './assets/glass-miners.webp'
+import glassChip from './assets/glass-chip.webp'
+import glassBitcoinCube from './assets/glass-bitcoin-cube.webp'
+import glassLightning from './assets/glass-lightning.webp'
+import wildLunarNewYear from './assets/wild-lunar-new-year.jpg'
+import wildTenkiStickers from './assets/wild-tenki-sticker-sheet.png'
+import luxorDataPoster from './assets/luxor-data-poster.png'
+import swagCapCatchMoreBugs from './assets/swag-cap-catch-more-bugs.jpg'
+import swagCapEphemeral from './assets/swag-cap-ephemeral.jpg'
+import swagCapSandboxmaxxing from './assets/swag-cap-sandboxmaxxing.jpg'
+import swagShirtLetThemCook from './assets/swag-shirt-let-them-cook.jpg'
+import swagBooth from './assets/swag-booth.jpg'
+import swagTeeLogo from './assets/swag-tee-logo.jpg'
+import tshirtBlankFront from './assets/tshirt-blank-front.png'
+import tshirtBlankBack from './assets/tshirt-blank-back.png'
+import modelFlux from './assets/model-flux.jpg'
+import modelIdeogram from './assets/model-ideogram.jpg'
+import modelRecraft from './assets/model-recraft.jpg'
+import modelSeedream from './assets/model-seedream.jpg'
+import modelKrea from './assets/model-krea.jpg'
+import modelNanoBanana from './assets/model-nano-banana.jpg'
+import taskText from './assets/task-text-pinboard.jpg'
+import taskPhotoreal from './assets/task-photoreal-storefront.jpg'
+import taskEdit from './assets/task-edit-dolphins.jpg'
+import WormholePanel from './WormholePanel.jsx'
 
-const ROUND_1_DRIVE_URL =
-  'https://drive.google.com/drive/folders/1lvAFBUg1C_cRFGQGpqfKEF5PD2Z0iKcj?usp=sharing'
-const ROUND_2_DRIVE_URL =
-  'https://drive.google.com/drive/folders/1lM3RSKAUs0Da7HMsSj2n6Um3krlnNCi5?usp=drive_link'
+const MIRO_BOARD_URL = 'https://miro.com/welcomeonboard/OExoanpHS1NoU0N6bEcxZUszbDRtTTFhclA2MG9pNU4vditFQVV6RWp0SzhIVlpPSDlJOERvRUNoeTBpQTVpbDBrazloL1BZelE1Q3hOWFNkRnE5UEthV2tLU09abUlZaXRnZkpEOHJ6MlNXL3ZGVXlXSEl6WUhzL21xZ3NiUVZQdGo1ZEV3bUdPQWRZUHQzSGl6V2NBPT0hdjE=?share_link_id=430088970920'
 
-function DriveLink({ href }) {
+function BoardLink() {
   return (
-    <a className="banner link" href={href} target="_blank" rel="noreferrer">
-      <FolderOpen size={24} weight="bold" />
-      <span>Shared Google Drive folder</span>
+    <a className="banner link" href={MIRO_BOARD_URL} target="_blank" rel="noreferrer">
+      <Images size={24} weight="bold" />
+      <span>Shared Miro board</span>
       <ArrowSquareOut size={20} weight="bold" />
     </a>
   )
 }
 
-function Placeholder({ children, tall }) {
-  return (
-    <div className={`placeholder ${tall ? 'tall' : ''}`}>
-      <span className="placeholder-tag">Placeholder</span>
-      <span>{children}</span>
-    </div>
-  )
-}
-
-// Held in memory only, so marks survive moving between slides but clear on refresh.
-const checkedCells = new Set()
-
-function CheckCell({ id, label }) {
-  const [checked, setChecked] = useState(() => checkedCells.has(id))
-  const toggle = () => {
-    if (checked) checkedCells.delete(id)
-    else checkedCells.add(id)
-    setChecked(!checked)
-  }
-  return (
-    <td className="check-cell">
-      <button onClick={toggle} aria-pressed={checked} aria-label={label}>
-        {checked && <CheckCircle weight="fill" />}
-      </button>
-    </td>
-  )
-}
-
-// Same as checkedCells: picks survive moving between slides but clear on refresh.
-const pickedCells = new Map()
-
-// A multi-select of the six models. Picks show as pills, kept in MODELS order.
-function ModelPickerCell({ id, label }) {
-  const [picked, setPicked] = useState(() => pickedCells.get(id) ?? [])
-  const [open, setOpen] = useState(false)
-  const [up, setUp] = useState(false)
-  const cell = useRef(null)
-  const trigger = useRef(null)
-  const menu = useRef(null)
-
-  const toggle = (name) => {
-    const next = MODELS.map((m) => m.name).filter((n) => (n === name) !== picked.includes(n))
-    pickedCells.set(id, next)
-    setPicked(next)
-  }
-
-  const openMenu = () => {
-    setUp(false)
-    setOpen(true)
-  }
-
-  // Lower rows would run off the bottom of the slide, so flip those menus upward.
-  useLayoutEffect(() => {
-    if (!open) return
-    const stage = cell.current.closest('.stage').getBoundingClientRect()
-    if (menu.current.getBoundingClientRect().bottom > stage.bottom - 8) setUp(true)
-  }, [open])
+// Copies `text` to the clipboard and shows "Copied" for a moment. The fallback covers
+// browsers that block the Clipboard API, such as a deck opened over plain http.
+function CopyButton({ text, label }) {
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    if (!open) return
-    const onPointerDown = (e) => {
-      if (!cell.current.contains(e.target)) setOpen(false)
-    }
-    const onKey = (e) => {
-      if (e.key !== 'Escape') return
-      setOpen(false)
-      trigger.current.focus()
-    }
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('keydown', onKey)
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('keydown', onKey)
-    }
-  }, [open])
+    if (!copied) return
+    const t = setTimeout(() => setCopied(false), 1500)
+    return () => clearTimeout(t)
+  }, [copied])
 
-  const onTriggerKey = (e) => {
-    if (e.target !== trigger.current) return
-    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
-      e.preventDefault()
-      openMenu()
-      requestAnimationFrame(() => menu.current?.querySelector('button')?.focus())
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text)
+    } catch {
+      const area = document.createElement('textarea')
+      area.value = text
+      document.body.append(area)
+      area.select()
+      document.execCommand('copy')
+      area.remove()
     }
-  }
-
-  const onMenuKey = (e) => {
-    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
-    e.preventDefault()
-    const options = [...menu.current.querySelectorAll('button')]
-    const i = options.indexOf(document.activeElement)
-    const step = e.key === 'ArrowDown' ? 1 : -1
-    options[(i + step + options.length) % options.length].focus()
+    setCopied(true)
   }
 
   return (
-    <td className="picker-cell" ref={cell}>
-      <div
-        ref={trigger}
-        className={`picker-trigger ${open ? 'open' : ''}`}
-        role="button"
-        tabIndex={0}
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        aria-label={label}
-        onClick={() => (open ? setOpen(false) : openMenu())}
-        onKeyDown={onTriggerKey}
-      >
-        {picked.length ? (
-          <div className="pills">
-            {picked.map((name) => (
-              <span className="pill" key={name}>
-                {name}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    toggle(name)
-                  }}
-                  aria-label={`Remove ${name}`}
-                >
-                  <X weight="bold" />
-                </button>
-              </span>
-            ))}
-          </div>
-        ) : (
-          <span className="picker-placeholder">Pick the tools</span>
-        )}
-        <CaretDown className="picker-caret" weight="bold" />
-      </div>
-      {open && (
-        <ul
-          ref={menu}
-          className={`picker-menu ${up ? 'up' : ''}`}
-          role="listbox"
-          aria-multiselectable="true"
-          aria-label={label}
-          onKeyDown={onMenuKey}
-        >
-          {MODELS.map((m) => {
-            const on = picked.includes(m.name)
-            return (
-              <li key={m.name} role="none">
-                <button role="option" aria-selected={on} onClick={() => toggle(m.name)}>
-                  <span className="picker-check">{on && <Check weight="bold" />}</span>
-                  {m.name}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      )}
-    </td>
+    <button type="button" className={`copy-button ${copied ? 'copied' : ''}`} onClick={copy}>
+      {copied ? <Check size={16} weight="bold" /> : <Copy size={16} weight="bold" />}
+      <span>{copied ? 'Copied' : label}</span>
+    </button>
   )
 }
 
-// Uploaded posters. Unlike the cells above, these are also saved in the browser's IndexedDB,
-// so they survive a refresh and only go when removed. `posters` caches what's loaded, keyed
-// by group, each entry { url, name } with url an object URL.
+// Uploaded posters, saved in the browser's IndexedDB so they survive a refresh and only go
+// when removed. `posters` caches what's loaded, keyed by group, each entry { url, name }
+// with url an object URL.
 const posters = new Map()
 
 const POSTER_STORE = 'posters'
@@ -497,6 +406,46 @@ function Lightbox({ src, label, onClose }) {
   )
 }
 
+// The model each pair used for their poster. Saved in localStorage beside the posters;
+// storage can be blocked, so every read and write is allowed to fail.
+const POSTER_MODELS_KEY = 'automating-art:poster-models'
+
+function loadPosterModels() {
+  try {
+    return JSON.parse(localStorage.getItem(POSTER_MODELS_KEY)) ?? {}
+  } catch {
+    return {}
+  }
+}
+
+const posterModels = loadPosterModels()
+
+function PosterModel({ id, label }) {
+  const [model, setModel] = useState(posterModels[id] ?? '')
+
+  const change = (e) => {
+    posterModels[id] = e.target.value
+    setModel(e.target.value)
+    try {
+      localStorage.setItem(POSTER_MODELS_KEY, JSON.stringify(posterModels))
+    } catch {
+      // Not saved, but the pick still shows until the page reloads.
+    }
+  }
+
+  return (
+    <label className="poster-model">
+      <span>Made with</span>
+      <select value={model} onChange={change} aria-label={`Model used by ${label}`}>
+        <option value="">Choose a model</option>
+        {MODELS.map((m) => (
+          <option key={m.name}>{m.name}</option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
 // A drop that misses a zone would otherwise make the browser open the file and leave the deck.
 function PosterGrid() {
   useEffect(() => {
@@ -512,7 +461,12 @@ function PosterGrid() {
   return (
     <div className="grid-3 poster-grid">
       {MODELS.map((m) => (
-        <PosterDrop key={m.name} id={m.group} label={`Group ${m.group} · ${m.name}`} />
+        // Pairs are numbered by their Round 1 model's slot, which keeps posters saved
+        // under the old per-model ids attached to the same zone.
+        <div className="poster-slot" key={m.group}>
+          <PosterDrop id={m.group} label={`Pair ${m.group}`} />
+          <PosterModel id={m.group} label={`Pair ${m.group}`} />
+        </div>
       ))}
     </div>
   )
@@ -520,34 +474,82 @@ function PosterGrid() {
 
 const TASKS = [
   {
-    name: 'Text',
+    name: 'Text in illustration',
     prompt:
-      'A poster on a sand-coloured background with a subtle diagonal stripe pattern. Three lines of text, centred. At the top, in huge bold letters: "HASHRATE". In the middle, in medium letters: "BLOCK 840,000". At the bottom, in small letters: "Luxor Technology Retreat". Nothing else in the image.',
-    edit: 'Change the background to navy. Keep the text and the stripes exactly the same.',
-  },
-  {
-    name: 'Flat graphic',
-    prompt:
-      'A flat vector icon of a pickaxe crossed with a lightning bolt. Two colours only: navy and #047BFF blue. Thick even lines, no gradients, no shadows, no text, on a plain white background.',
-    edit: 'Remove the lightning bolt. Change nothing else.',
+      'A cartoon illustration of an old-fashioned handwritten letter on aged cream paper, lying on a worn wooden desk beside a fountain pen and an inkwell. Bold black outlines, flat colours and simple cel shading. Write the letter yourself in dark ink: a date, a greeting, two short paragraphs and a signature, in legible English handwriting with printed letters. Keep every line of handwriting sharp and readable. No cursive, no typed text, no envelope, no people. Drawn from an isometric angle in warm desk-lamp light.',
+    edit: 'Change the ink to blue. Keep every word and the layout exactly the same.',
+    example: taskText,
+    exampleAlt: 'Cartoon of a cork pinboard on a desk under a lamp, beside an inkwell and a pen, with six notes: To do, Ideas, Groceries, Reminder, Weekend and Books, each with a short handwritten line',
   },
   {
     name: 'Photoreal',
     prompt:
-      'A close-up photo of a technician’s hand holding a gold Bitcoin coin in a mining facility. Rows of mining machines with blue status lights, blurred in the background. Fingerprints and scratches on the coin. Shot on a 50mm lens.',
-    edit: 'Make the coin silver. Change nothing else.',
+      'A head-and-shoulders portrait photo of a technician in a mining facility, holding a gold Bitcoin coin up beside their face and looking into the camera. Fingerprints and scratches on the coin, and rows of mining machines with blue status lights behind them. Keep the ₿ symbol on the coin crisp. Natural skin texture: not airbrushed, no extra fingers, no text in the background. Shot on a 50mm lens with the background blurred.',
+    edit: 'Make the coin silver. Keep the face exactly the same.',
+    example: taskPhotoreal,
+    exampleAlt: 'A smiling woman in a white T-shirt and jeans outside a sandwich shop with a red and white striped awning',
   },
 ]
 
 const num = (i) => String(i + 1).padStart(2, '0')
 
+// Each level adds one thing to the one before it. `routes` are the paths through the
+// maze that stay open at that level; null leaves the whole field open.
+const LEVELS = [
+  { name: 'Vague prompts', routes: null },
+  { name: 'Descriptive prompts', routes: 'abcdef' },
+  { name: 'AI-optimized prompts', routes: 'abc' },
+  { name: 'Prompting with references', routes: 'a' },
+]
+
+// Routes through a 7×7 field, as [column, row] corners joined by straight runs. Route `a`
+// is the one that survives to the last level.
+const MAZE_SIZE = 7
+const MAZE_ROUTES = {
+  a: [[3, 0], [3, 1], [1, 1], [1, 3], [4, 3], [4, 5], [3, 5], [3, 6]],
+  b: [[3, 1], [5, 1], [5, 6], [3, 6]],
+  c: [[1, 3], [1, 6], [3, 6]],
+  d: [[4, 3], [6, 3]],
+  e: [[1, 1], [0, 1], [0, 5]],
+  f: [[5, 1], [6, 1], [6, 0]],
+}
+
+function routeCells(corners) {
+  const cells = new Set()
+  for (let i = 1; i < corners.length; i++) {
+    let [c, r] = corners[i - 1]
+    const [c2, r2] = corners[i]
+    cells.add(`${c},${r}`)
+    while (c !== c2 || r !== r2) {
+      c += Math.sign(c2 - c)
+      r += Math.sign(r2 - r)
+      cells.add(`${c},${r}`)
+    }
+  }
+  return cells
+}
+
+function Maze({ routes }) {
+  const open = routes && new Set([...routes].flatMap((k) => [...routeCells(MAZE_ROUTES[k])]))
+  const final = routes?.length === 1
+  return (
+    <div className="maze" style={{ '--maze-size': MAZE_SIZE }} aria-hidden="true">
+      {Array.from({ length: MAZE_SIZE * MAZE_SIZE }, (_, i) => {
+        const key = `${i % MAZE_SIZE},${Math.floor(i / MAZE_SIZE)}`
+        const state = !open || open.has(key) ? (final ? 'route' : 'open') : 'shut'
+        return <span className={`maze-cell ${state}`} key={key} />
+      })}
+    </div>
+  )
+}
+
 const MODELS = [
-  { group: 1, name: 'Flux', note: 'Use the exact name shown in WaveSpeedAI' },
-  { group: 2, name: 'Ideogram 4.0', note: 'Editable text layers, character consistency' },
-  { group: 3, name: 'Recraft V4.1', note: 'Editable vector output, reusable styles' },
-  { group: 4, name: 'Reve 2.1', note: 'Native 4K, print-ready, lossless edits' },
-  { group: 5, name: 'Krea 2', note: '100 compute units/day free, upscaling to 22K' },
-  { group: 6, name: 'Nano Banana', note: 'Conversational multi-turn refinement' },
+  { group: 1, name: 'Flux', maker: 'Black Forest Labs', image: modelFlux, credits: '$1 free credit for new WaveSpeedAI accounts, no card', url: 'https://wavespeed.ai' },
+  { group: 2, name: 'Ideogram 4.0', maker: 'Ideogram', image: modelIdeogram, credits: '10 free credits a week', url: 'https://ideogram.ai' },
+  { group: 3, name: 'Recraft V4.1', maker: 'Recraft', image: modelRecraft, credits: '30 free credits a day', url: 'https://www.recraft.ai' },
+  { group: 4, name: 'Seedream 5.0 Lite', maker: 'ByteDance', image: modelSeedream, credits: 'Free credits every day on Dreamina', url: 'https://dreamina.capcut.com' },
+  { group: 5, name: 'Krea 2', maker: 'Krea', image: modelKrea, credits: '100 free compute units a day, about 11 images', url: 'https://www.krea.ai' },
+  { group: 6, name: 'Nano Banana', maker: 'Google DeepMind', image: modelNanoBanana, credits: 'About 20 free images a day in the Gemini app', url: 'https://gemini.google.com' },
 ]
 
 // The parts of a prompt, in order. Model-agnostic: they apply to every tool in the session.
@@ -589,22 +591,102 @@ const OLD_FASHIONED = [
   },
 ]
 
+// The Old Fashioned prompt as one paragraph, each part marked with its number, over one
+// card per part. Hovering a card highlights its part of the prompt and dims the rest.
+function PromptBreakdown() {
+  const [active, setActive] = useState(null)
+  return (
+    <div className="stack">
+      <div className="prompt-top">
+        <div className="card prompt-whole">
+          <p className={`annotated-prompt ${active === null ? '' : 'has-active'}`}>
+            {OLD_FASHIONED.map((seg) => {
+              // Keep the marker on the same line as the first word.
+              const [first, ...rest] = seg.text.split(' ')
+              return (
+                <span
+                  className={`seg ${active === seg.part ? 'active' : ''}`}
+                  key={seg.part}
+                >
+                  <span className="nowrap">
+                    <span className="seg-num">{num(seg.part)}</span>
+                    {first}
+                  </span>{' '}
+                  {rest.join(' ')}
+                </span>
+              )
+            })}
+          </p>
+        </div>
+        <figure className="prompt-result">
+          <img
+            src={promptOldFashioned}
+            alt="An Old Fashioned with an orange peel on a dark wooden side table under a brass lamp, beside a tufted brown leather armchair"
+          />
+          <figcaption>ChatGPT Images 2.5</figcaption>
+        </figure>
+      </div>
+      <div className="prompt-parts" onMouseLeave={() => setActive(null)}>
+        {OLD_FASHIONED.map((seg) => (
+          <div
+            className={`card ${active === seg.part ? 'active' : ''}`}
+            key={seg.part}
+            onMouseEnter={() => setActive(seg.part)}
+          >
+            <span className="seg-num">{num(seg.part)}</span>
+            <h3>{PROMPT_PARTS[seg.part].name}</h3>
+            <p>{seg.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Amber glass illustrations shown one at a time over the silk background, each for five
+// seconds: the current one fades out before the next fades in, so they never overlap.
+const GLASS_ICONS = [
+  [glassNotebook, 'A glowing amber glass spiral notebook'],
+  [glassScales, 'Glass scales balancing two gold pyramids'],
+  [glassMiners, 'Two Bitcoin mining machines in an amber glass case'],
+  [glassChip, 'A glass pyramid over a glowing gold chip'],
+  [glassBitcoinCube, 'A gold Bitcoin coin inside a glass cube'],
+  [glassLightning, 'Three amber glass lightning bolts'],
+]
+
+function GlassIconCycle() {
+  const [shown, setShown] = useState(0)
+  useEffect(() => {
+    const timer = setInterval(() => setShown((i) => (i + 1) % GLASS_ICONS.length), 5000)
+    return () => clearInterval(timer)
+  }, [])
+  return (
+    <div className="glass-cycle">
+      {GLASS_ICONS.map(([src, alt], i) => (
+        <img key={src} src={src} alt={alt} className={i === shown ? 'shown' : ''} aria-hidden={i !== shown} />
+      ))}
+    </div>
+  )
+}
+
 const SCHEDULE = [
-  { min: 10, name: 'Context', detail: 'How image models work and the six we’ll use' },
+  { min: 3, name: 'Context', detail: 'Why AI visuals matter and the six models we’ll use' },
   { min: 5, name: 'Groups and logins', detail: 'Find your group and sign in to your model' },
-  { min: 15, name: 'Round 1', detail: 'Three tasks, then one edit on each' },
-  { min: 10, name: 'Strategy meeting', detail: 'Compare results and set rules for Round 2' },
-  { min: 15, name: 'Round 2', detail: 'The poster competition' },
-  { min: 10, name: 'Vote and wrap-up', detail: 'Pick winners and match tools to jobs' },
+  { min: 15, name: 'Appetizer', detail: 'Two tasks, then one edit on each' },
+  { min: 30, name: 'Main Course', detail: 'The T-shirt competition' },
+  { min: 2, name: 'Wrap up', detail: 'What still goes to a human, and where to go next' },
   { min: 5, name: 'Questions', detail: 'Open floor' },
 ]
 
 export const slides = [
   {
     title: null,
+    // Drawn by App behind the whole window, not just the slide
+    background: 'cipher',
     body: (
       <div className="cover">
-        <div className="cover-kicker">Punta Cana Retreat 2026</div>
+        <img className="cover-logo for-dark" src={luxorLogo} alt="Luxor" />
+        <img className="cover-logo for-light" src={luxorLogoLight} alt="Luxor" />
         <div className="cover-title">Automating Visuals</div>
         <div className="cover-sub">Which AI image model to reach for, depending on the job</div>
         <div className="cover-byline">
@@ -613,7 +695,6 @@ export const slides = [
         </div>
       </div>
     ),
-    notes: 'Opening. Groups form and confirm logins in the first 3 minutes.',
   },
   {
     section: 'Overview',
@@ -630,388 +711,393 @@ export const slides = [
         ))}
       </ol>
     ),
-    notes: 'Keep an eye on the clock in Round 1. It tends to run long and eat into Round 2.',
   },
   {
-    section: 'Context · 10 min',
-    title: 'AI imagery in the wild',
+    section: 'Context',
+    title: 'Examples of AI usage in visuals',
     body: (
-      <div className="grid-3">
-        <Placeholder tall>Example image</Placeholder>
-        <Placeholder tall>Example image</Placeholder>
-        <Placeholder tall>A merch failure</Placeholder>
+      <div className="gallery fill">
+        <figure className="shot">
+          <img src={wildAmberSilk} alt="" />
+          <GlassIconCycle />
+          <figcaption>Midjourney V8.2</figcaption>
+        </figure>
+        <figure className="shot">
+          <img src={wildLunarNewYear} alt="Luxor Lunar New Year poster: a golden horse on Bitcoin coins and mining machines" />
+          <figcaption>ChatGPT Images 2.5</figcaption>
+        </figure>
+        <figure className="shot">
+          <img src={luxorDataPoster} alt="Luxor poster, “Data That Drives Decisions”: black bars with yellow tops rising along a trend line on cream" />
+          <figcaption>Claude Opus 5</figcaption>
+        </figure>
       </div>
     ),
-    notes:
-      'This slide should be mostly images with you talking over them. The old bullets were speaker notes, not slide content. Include at least one merch failure.',
   },
   {
-    section: 'Context · 10 min',
-    title: 'How AI generates images',
+    section: 'Context',
+    title: 'We will dive into six models',
     body: (
       <div className="stack">
-        <p className="lead">
-          Your prompt becomes numbers. The model starts from pure noise and removes it, step by
-          step, until something matching those numbers emerges.
-        </p>
-        <div className="grid-2">
-          <div className="card">
-            <h3>Same prompt, different image</h3>
-            <p>
-              The starting noise is random. That seed is why you can’t reproduce a result you
-              liked unless you saved it. <strong>Save your seeds.</strong>
-            </p>
-          </div>
-          <div className="card">
-            <h3>Text is hard because nothing is typesetting</h3>
-            <p>
-              The model pushes pixels toward “looks like letters”. It doesn’t place glyphs. That’s
-              why most models get text wrong and why Ideogram exists as a separate product.
-            </p>
-          </div>
+        <div className="grid-3">
+          {MODELS.map((m) => (
+            <div
+              className={`card model ${m.image ? 'has-image' : ''}`}
+              key={m.name}
+              style={m.image ? { '--card-image': `url(${m.image})` } : undefined}
+            >
+              <h3>{m.name}</h3>
+              <p>{m.maker}</p>
+            </div>
+          ))}
         </div>
+        <div className="banner info">Models chosen for free credits upon account creation</div>
       </div>
     ),
-    notes:
-      'Say out loud: this is a denoising loop on a GPU. Luxor sells the machines it runs on. One image is a few seconds of the compute we rent out.',
   },
   {
-    section: 'Context · 10 min',
-    title: 'Six groups, six models',
-    body: (
-      <div className="grid-3">
-        {MODELS.map((m) => (
-          <div className="card model" key={m.name}>
-            <div className="model-group">Group {m.group}</div>
-            <h3>{m.name}</h3>
-            <p>{m.note}</p>
-          </div>
-        ))}
-      </div>
-    ),
-    notes:
-      'Before the session: confirm the Flux name in WaveSpeedAI and which Nano Banana the free AI Studio tier gives you. GPT-4o has been dropped: it has no free tier and needs API org verification.',
-  },
-  {
-    section: 'Groups and logins · 5 min',
-    title: '18 people, 6 groups of 3. Each group gets one model.',
+    section: 'Groups and logins',
+    title: 'Groups of 2. Each group gets one model.',
     body: (
       <div className="stack">
         <div className="pairs">
-          {MODELS.map((m) => (
+          {MODELS.map((m, i) => (
             <div className="pair" key={m.name}>
               <div className="pair-head">
-                <span className="model-group">Group {m.group}</span>
+                <div className="task-letter">{num(i)}</div>
                 <h3>{m.name}</h3>
               </div>
-              <div className="pair-people">
-                {[1, 2, 3].map((n) => (
-                  <div className="person" key={n}>
-                    <User weight="fill" />
-                    <span>Name</span>
-                  </div>
-                ))}
+              <p className="pair-credits">{m.credits}</p>
+              <div className="pair-foot">
+                <span className="pair-seats" aria-label="2 people">
+                  <User weight="fill" />
+                  <User weight="fill" />
+                </span>
+                <a className="model-link" href={m.url} target="_blank" rel="noreferrer">
+                  <span>{new URL(m.url).hostname.replace(/^(www|app)\./, '')}</span>
+                  <ArrowSquareOut size={16} weight="bold" />
+                </a>
               </div>
             </div>
           ))}
         </div>
       </div>
     ),
-    notes: 'Replace each “Name” square with a real name before the session, or the first five minutes go to sorting out who has which model.',
   },
   {
-    section: 'Round 1 · 15 min',
-    title: 'Three tasks, then one edit on each',
+    section: 'Appetizer',
+    title: 'Two tasks, then one edit on each',
     body: (
-      <div className="stack">
-        <div className="grid-4">
+      <div className="stack task-stack">
+        <div className="grid-3 task-grid">
           {TASKS.map((t, i) => (
             <div className="card task" key={t.name}>
               <div className="task-letter">{num(i)}</div>
               <h3>{t.name}</h3>
-              <Placeholder tall>Example output</Placeholder>
+              <img className="task-image" src={t.example} alt={t.exampleAlt} />
             </div>
           ))}
           <div className="card task accent">
-            <div className="task-letter">04</div>
+            <div className="task-letter">03</div>
             <h3>The edit</h3>
-            <Placeholder tall>Edited results</Placeholder>
+            <div className="task-image blurred">
+              <img
+                src={taskEdit}
+                alt="Pastel illustration of two dolphins leaping through an underwater temple with marble columns and crystals"
+              />
+            </div>
           </div>
         </div>
-        <div className="banner warn">No reference images in Round 1</div>
+        <div className="banner warn">No reference images in the Appetizer</div>
       </div>
     ),
-    notes:
-      'Every group runs the same three prompts on their one model. If groups upload different references you end up comparing the references, not the models. Free tiers also differ on uploads. References come back in Round 2.',
   },
   {
-    section: 'Round 1 · 15 min',
+    section: 'Appetizer',
+    title: 'The prompt that works',
+    body: <PromptBreakdown />,
+  },
+  {
+    section: 'Appetizer',
     title: 'The prompts',
     body: (
       <div className="stack">
-        <div className="prompt-rows">
+        <div className="grid-2 prompt-cards">
           {TASKS.map((t, i) => (
-            <div className="prompt-row" key={t.name}>
-              <div className="task-letter">{num(i)}</div>
-              <div>
+            <div className="card prompt-card" key={t.name}>
+              <div className="prompt-head">
+                <div className="task-letter">{num(i)}</div>
                 <h3>{t.name}</h3>
-                <p className="prompt-full">“{t.prompt}”</p>
-                <p className="prompt-edit">
-                  <strong>Then edit:</strong> {t.edit}
-                </p>
               </div>
-            </div>
-          ))}
-        </div>
-        <DriveLink href={ROUND_1_DRIVE_URL} />
-      </div>
-    ),
-    notes:
-      'Write these once and also print them on a card for each group. Post results to the shared board, which has a pre-labelled section for each model.',
-  },
-  {
-    section: 'Strategy meeting · 10 min',
-    title: 'Walk the grid',
-    body: (
-      <div className="stack">
-        <table className="grid-table walk">
-          <thead>
-            <tr>
-              <th>Question</th>
-              {MODELS.map((m) => (
-                <th key={m.name}>{m.name}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {[
-              'Which models got all three lines right?',
-              'Which models matched the flat style you asked for?',
-              'Which models made a scene that looks like a real photo?',
-              'Which models changed only the one thing you asked for?',
-            ].map((q) => (
-              <tr key={q}>
-                <td>{q}</td>
-                {MODELS.map((m) => (
-                  <CheckCell key={m.name} id={`${q}|${m.name}`} label={`${m.name}: ${q}`} />
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ),
-    notes:
-      '3 min on the grid, one task at a time; each question becomes a row of the closing table. Then 3 min of group reports at 20 seconds each.',
-  },
-  {
-    section: 'Strategy meeting · 10 min',
-    title: 'A prompt in six parts',
-    body: (
-      <div className="stack">
-        <div className="grid-3 parts">
-          {PROMPT_PARTS.map((p, i) => (
-            <div className="card" key={p.name}>
-              <div className="task-letter">{num(i)}</div>
-              <h3>{p.name}</h3>
-              <p>{p.how}</p>
-            </div>
-          ))}
-        </div>
-        <div className="banner ok">
-          Beyond the prompt: attach a reference image, then change one thing per turn.
-        </div>
-      </div>
-    ),
-    notes:
-      'These parts work for every model, not just one. All three Round 1 prompts follow this order, so ask the room which parts their best results had. Reveal the parts as the room arrives at them, and add anything new they find. Spend 2 min here.',
-  },
-  {
-    section: 'Strategy meeting · 10 min',
-    title: 'Worked example: the Old Fashioned',
-    body: (
-      <div className="stack">
-        <p className="muted">
-          “An Old Fashioned next to a leather chair” tends to come back in a martini glass, over
-          crushed ice, or in a crowded bar. The prompt that works:
-        </p>
-        <div className="annotated">
-          <ol className="annotations">
-            {OLD_FASHIONED.map((seg) => (
-              <li key={seg.part}>
-                <span className="seg-num">{num(seg.part)}</span>
-                <div>
-                  <strong>{PROMPT_PARTS[seg.part].name}</strong>
-                  <p>{seg.note}</p>
+              <div className="copy-box">
+                <div className="copy-box-head">
+                  <span>Prompt</span>
+                  <CopyButton text={t.prompt} label="Copy" />
                 </div>
-              </li>
-            ))}
-            <li>
-              <span className="seg-num">06</span>
-              <div>
-                <strong>Reference image</strong>
-                <p>One photo of the drink, one of the chair. They lock the look faster than any wording.</p>
+                <p className="prompt-full">{t.prompt}</p>
               </div>
-            </li>
-          </ol>
-          <div className="stack">
-            <p className="annotated-prompt">
-              {OLD_FASHIONED.map((seg, i) => {
-                // Keep the marker on the same line as the first word.
-                const [first, ...rest] = seg.text.split(' ')
-                return (
-                  <span className={`seg ${i % 2 ? 'alt' : ''}`} key={seg.part}>
-                    <span className="nowrap">
-                      <span className="seg-num">{num(seg.part)}</span>
-                      {first}
-                    </span>{' '}
-                    {rest.join(' ')}
-                  </span>
-                )
-              })}
-            </p>
-            <div className="grid-2">
-              <Placeholder tall>
-                <span className="seg-num">06</span> The Old Fashioned
-              </Placeholder>
-              <Placeholder tall>
-                <span className="seg-num">06</span> The leather chair
-              </Placeholder>
+              <div className="copy-box edit">
+                <div className="copy-box-head">
+                  <span>Then edit</span>
+                  <CopyButton text={t.edit} label="Copy" />
+                </div>
+                <p className="prompt-edit">{t.edit}</p>
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
+        <BoardLink />
+      </div>
+    ),
+  },
+  {
+    section: 'Appetizer',
+    title: 'How did it go?',
+    body: (
+      <div className="stack">
+        <div className="grid-3 share">
+          {[
+            ['Your best image', 'Which of the two tasks did your model handle best?'],
+            ['What went wrong', 'The one thing it got wrong: a misspelt word, an extra finger, the wrong colour.'],
+            ['Did the edit hold', 'Did it change only what you asked, or did the rest of the image move too?'],
+            ['Any plan limits', 'Did you hit a cap: out of credits, a daily limit, a paywall or a long queue?'],
+            ['The interface', 'What did you think of it? Easy to find your way around, or a fight?'],
+            ['Worth a mention', 'Any feature worth pointing out, like upscaling, inpainting or style presets?'],
+          ].map(([name, how], i) => (
+            <div className="card" key={name}>
+              <div className="task-letter">{num(i)}</div>
+              <h3>{name}</h3>
+              <p>{how}</p>
+            </div>
+          ))}
         </div>
       </div>
     ),
-    notes:
-      'After the reference image, change one thing per turn instead of rewriting the prompt. That is the Nano Banana approach on a small scale, so demo it live if there’s time.',
   },
   {
-    section: 'Strategy meeting · 10 min',
-    title: 'Live demo: add a reference image',
+    section: 'Appetizer',
+    title: 'The levels of image generation',
     body: (
-      <div className="grid-2">
-        <Placeholder tall>Round 1 prompt, no reference</Placeholder>
-        <Placeholder tall>Same prompt with a reference image</Placeholder>
+      <div className="levels">
+        <div className="levels-row">
+          {LEVELS.map((l, i) => (
+            <figure className={`level ${i === LEVELS.length - 1 ? 'final' : ''}`} key={l.name}>
+              <Maze routes={l.routes} />
+              <figcaption>
+                <span className="level-num">Level {i + 1}</span>
+                <span className="level-name">{l.name}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+        <div className="levels-axis">
+          <span>Every possibility</span>
+          <span className="levels-axis-line" />
+          <span>Targeted possibilities</span>
+        </div>
       </div>
     ),
-    notes:
-      'Takes 1 minute and you run it, not the groups. This is the most useful technique in the session. Recraft’s “consistent styles without training” is the same feature built into a product, so name it.',
   },
   {
-    section: 'Round 2 · 15 min',
-    title: 'The poster competition',
+    section: 'Appetizer',
+    title: 'Go from this to this',
     body: (
-      <div className="brief">
-        <div className="stack">
+      <div className="before-after">
+        <figure className="shot" style={{ '--ar': 1448 / 1086 }}>
+          <img
+            src={promptOldFashioned}
+            alt="An Old Fashioned with an orange peel on a dark wooden side table under a brass lamp, beside a tufted brown leather armchair"
+          />
+          <figcaption>Prompt, no reference images</figcaption>
+        </figure>
+        <ArrowRight className="before-after-arrow" size={36} weight="bold" />
+        <figure className="shot" style={{ '--ar': 1448 / 1086 }}>
+          <img
+            src={demoWithReference}
+            alt="An Old Fashioned with a long orange peel on a dark wooden side table beside a studded brown Chesterfield sofa"
+          />
+          <figcaption>Same prompt with the reference images</figcaption>
+          <div className="ref-thumbs">
+            <img src={referenceDrink} alt="Reference: an Old Fashioned with a large ice cube and an orange peel, on white" />
+            <img src={referenceChair} alt="Reference: a brown leather Chesterfield armchair with brass studs, on white" />
+          </div>
+        </figure>
+      </div>
+    ),
+  },
+  {
+    background: 'logo3d', // drawn by App behind the whole window, like the cover
+    body: <p className="statement">Main Course</p>,
+  },
+  // Past Tenki Cloud swag. No section or title, so the images get the whole slide.
+  {
+    body: (
+      <div className="swag">
+        {/* [grid area, image, alt, crop position when the centre would cut something] */}
+        {[
+          ['stickers', wildTenkiStickers, 'Tiled pixel-art hexagon stickers for Tenki: a raccoon eating sushi, “Every CI job served fresh”, and a raccoon DJ, “Everything is ephemeral”', 'left center'],
+          ['booth', swagBooth, 'A Tenki conference booth: a navy backdrop and tablecloth with the Tenki logo, and a roll-up banner listing Sandboxes, Runners and Code Reviewer', 'center 75%'],
+          ['bugs', swagCapCatchMoreBugs, 'A navy trucker cap with a yellow “Catch More Bugs, Tenki Code Reviewer” ladybug patch, worn outdoors', 'center 15%'],
+          ['ephemeral', swagCapEphemeral, 'A navy dad cap embroidered “ephemeral” on a wooden desk'],
+          ['sandbox', swagCapSandboxmaxxing, 'A navy dad cap embroidered “sandboxmaxxing” on a wooden desk'],
+          ['back', swagShirtLetThemCook, 'The back of a black Tenki Cloud long-sleeve tee: two halftone robots stirring a pot under “Let Them Cook”'],
+          ['front', swagTeeLogo, 'A black tee with a small white line-art Tenki cube logo on the left chest'],
+        ].map(([area, src, alt, position]) => (
+          <figure className="shot" key={area} style={{ gridArea: area }}>
+            <img src={src} alt={alt} style={{ objectPosition: position }} />
+            <figcaption>Gemini · Nano Banana 2.1</figcaption>
+          </figure>
+        ))}
+      </div>
+    ),
+  },
+  {
+    section: 'Main Course',
+    title: 'Tshirt Competition',
+    body: (
+      <div className="stack">
+        <div className="brief">
           <dl className="brief-list">
             <div>
               <dt>Topic</dt>
-              <dd>Punta Cana Retreat 2026</dd>
+              <dd>Luxor AI’s first T-shirt concept</dd>
             </div>
             <div>
-              <dt>Size</dt>
-              <dd>24 × 36 in, portrait</dd>
+              <dt>Ideas</dt>
+              <dd className="idea-tags">
+                {['Sandbox', 'Runners', 'Code Reviewer', 'Compute', 'Hardware', 'AI'].map((idea) => (
+                  <span key={idea}>{idea}</span>
+                ))}
+              </dd>
             </div>
             <div>
-              <dt>Must include</dt>
-              <dd>“Punta Cana Retreat 2026”, readable from across the room</dd>
+              <dt>Reference images</dt>
+              <dd>Allowed</dd>
+            </div>
+            <div>
+              <dt>Submission</dt>
+              <dd>One photoreal mockup per pair</dd>
+            </div>
+            <div>
+              <dt>Required content</dt>
+              <dd>
+                Luxor AI logo{' '}
+                <a className="inline-link" href="https://docs.luxor.tech/logos-and-usage" target="_blank" rel="noreferrer">
+                  Logos and usage
+                  <ArrowSquareOut size={16} weight="bold" />
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt>Colors</dt>
+              <dd>
+                Any{' '}
+                <span className="color-note">
+                  (yellow <span className="swatch" style={{ background: '#FFC547' }} /> #FFC547 is encouraged but not
+                  required)
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt>T-shirt</dt>
+              <dd>Assets provided</dd>
             </div>
           </dl>
-          <div className="banner ok">Reference images are allowed in Round 2</div>
-          <p className="muted">
-            Brand reference pack on the shared board: Tenki blue, the existing 24 × 36 poster, the
-            sticker artwork.
-          </p>
-          <DriveLink href={ROUND_2_DRIVE_URL} />
-        </div>
-        <div className="poster-frame">
-          <div className="poster">
-            <span>Punta Cana Retreat 2026</span>
-          </div>
-          <div className="poster-size">24 × 36 in</div>
-        </div>
-      </div>
-    ),
-    notes:
-      'Still to decide: is Round 2 locked to each group’s model, or free choice? Free choice puts the model-selection finding to the test. Reve is the only model claiming native 4K print-ready output, with Krea’s 22K upscale second. Say so in the strategy meeting, or tell people judging is on concept, not resolution.',
-  },
-  {
-    section: 'Vote and wrap-up · 10 min',
-    title: 'Vote and winners',
-    body: (
-      <PosterGrid />
-    ),
-    notes: 'Voting method and prize are still to be decided.',
-  },
-  {
-    section: 'Vote and wrap-up · 10 min',
-    title: 'Which tool for which job',
-    body: (
-      <div className="stack">
-        <table className="grid-table closing">
-          <tbody>
+          <div className="tee-downloads">
             {[
-              ['Text in the image', 'Headlines and labels that have to be spelled exactly right'],
-              ['A consistent set', 'Several images in one shared style, like a poster series'],
-              ['Exact compliance', 'Doing precisely what the prompt asks: colours, counts, layout'],
-              ['Fixing what you already have', 'Changing one thing in an image and leaving the rest alone'],
-              ['Everything else', 'General images where no single strength decides it'],
-            ].map(([job, detail]) => (
-              <tr key={job}>
-                <td>
-                  {job}
-                  <span className="job-detail">{detail}</span>
-                </td>
-                <ModelPickerCell id={job} label={`Tools for ${job.toLowerCase()}`} />
-              </tr>
+              ['Front', tshirtBlankFront],
+              ['Back', tshirtBlankBack],
+            ].map(([side, png]) => (
+              <div className="tee-download" key={side}>
+                <img src={png} alt={`Blank black T-shirt, ${side.toLowerCase()}`} />
+                <div className="tee-download-foot">
+                  <span>{side}</span>
+                  <a
+                    href={png}
+                    download={`tshirt-${side.toLowerCase()}.png`}
+                    title={`Download the blank T-shirt ${side.toLowerCase()} as PNG`}
+                  >
+                    <DownloadSimple size={14} weight="bold" />
+                    PNG
+                  </a>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
+        <BoardLink />
       </div>
     ),
-    notes:
-      'Expected answers, for you only: Text → Ideogram. Consistent set → Recraft or Krea. Exact compliance → Reve. Everything else → Flux. Fixing what you have → Nano Banana. Filling it in live makes it a finding the room reached, not something you told them.',
   },
   {
-    section: 'Vote and wrap-up · 10 min',
+    section: 'Wrap up',
     title: 'What still goes to a human',
     body: (
-      <div className="grid-2">
+      <div className="grid-3 card-row">
         <div className="card">
-          <h3>Exact brand colour</h3>
+          <div className="task-letter">01</div>
+          <h3>Art direction</h3>
           <p>
-            We shipped a card where <code>#047BFF</code> came back as <code>#4674B9</code>.
+            Composing the image: laying out the elements so it meets its visual communication
+            goals.
           </p>
         </div>
         <div className="card">
-          <h3>Print-ready vectors</h3>
-          <p>Generated “vectors” aren’t real paths. Anything going to press gets rebuilt.</p>
+          <div className="task-letter">02</div>
+          <h3>Model strengths</h3>
+          <p>
+            Each model has strengths and weaknesses. Pick the one that fits the job to get a better
+            output.
+          </p>
         </div>
         <div className="card">
-          <h3>Typography</h3>
-          <p>Kerning and a specific typeface.</p>
-        </div>
-        <div className="card">
-          <h3>A cohesive set</h3>
-          <p>Six posters that feel like one family.</p>
+          <div className="task-letter">03</div>
+          <h3>Prepping handoff</h3>
+          <p>
+            Someone still has to match the printer’s colour, size and bleed, and rebuild any
+            vectors as real paths.
+          </p>
         </div>
       </div>
     ),
   },
   {
-    section: 'Vote and wrap-up · 10 min',
-    title: 'Automating visuals further with MCPs',
+    section: 'Wrap up',
+    title: 'Today was a limited sample, not the final word',
     body: (
-      <div className="stack">
-        <Placeholder tall>Scenario MCP: what it is and how we’d use it</Placeholder>
+      <div className="explore">
+        <WormholePanel className="explore-panel" />
+        <div className="explore-cols">
+          <div>
+            <div className="explore-text">
+              <div className="explore-num">01</div>
+              <h3>Limited models</h3>
+              <p>We tried six, chosen for the free credits they give on sign-up.</p>
+            </div>
+          </div>
+          <div>
+            <div className="explore-text">
+              <div className="explore-num">02</div>
+              <h3>Limited generations</h3>
+              <p>Each group made only a few images before the free credits ran out.</p>
+            </div>
+          </div>
+          <div>
+            <div className="explore-text">
+              <div className="explore-num">03</div>
+              <h3>Many more to try</h3>
+              <p>GPT Image 2, Midjourney and Stable Diffusion are just a few of the others.</p>
+            </div>
+          </div>
+        </div>
       </div>
     ),
-    notes: 'Placeholder. Content for this slide is still to be written.',
   },
   {
     title: null,
+    background: 'cipher',
+    backgroundDim: true, // twice the cover's overlay, so the animation sits further back
     body: (
-      <div className="cover">
+      <div className="cover centered">
         <div className="cover-title">Questions?</div>
       </div>
     ),

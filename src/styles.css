@@ -1,106 +1,152 @@
 :root {
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
-  --bg: #e9edf3;
+  --font-sans: 'Inter Tight Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bg: #f5f5f5;
   --stage: #ffffff;
-  --ink: #0f172a;
-  --muted: #64748b;
-  --line: #e2e8f0;
-  --card: #f8fafc;
-  --card-ink: #334155;
-  --blue: #047bff;
-  --on-blue: #ffffff;
-  --blue-soft: #e6f1ff;
-  --blue-line: #b3d4ff;
-  --warn: #b45309;
-  --warn-soft: #fef3c7;
+  --ink: #0a0a0a;
+  --muted: #666666;
+  --line: #e5e5e5;
+  --card: #fafafa;
+  --card-ink: #333333;
+  --brand: #ffc547; /* fills, borders and highlights */
+  --brand-ink: #946200; /* brand as text: the yellow itself is unreadable on white */
+  --on-brand: #000000;
+  --brand-soft: #fff6e0;
+  --brand-line: #f5d68c;
+  --warn: #c2410c;
+  --warn-soft: #ffedd5;
   --ok: #047857;
   --ok-soft: #d1fae5;
   --fail-soft: #fee2e2;
   --fail-line: #fecaca;
-  --code-bg: #e2e8f0;
-  --ph-border: #cbd5e1;
-  --ph-a: #f8fafc;
-  --ph-b: #f1f5f9;
-  --ph-tag: #94a3b8;
-  --shadow: rgba(15, 23, 42, 0.14);
-  --chrome-ink: #334155;
+  --code-bg: #eeeeee;
+  --ph-border: #d4d4d4;
+  --ph-a: #fafafa;
+  --ph-b: #f2f2f2;
+  --ph-tag: #a3a3a3;
+  --shadow: rgba(0, 0, 0, 0.14);
+  --chrome-ink: #333333;
   --chrome-btn: #ffffff;
-  --chrome-btn-ink: #0f172a;
-  --chrome-line: #cbd5e1;
-  --notes-bg: #ffffff;
-  --notes-ink: #0f172a;
-  --notes-muted: #64748b;
+  --chrome-btn-ink: #0a0a0a;
+  --chrome-line: #d4d4d4;
+  --notes-muted: #666666;
+  --maze-open: #e5e5e5;
+  --maze-shut: #1a1a1a;
+  --cipher-overlay: rgba(255, 255, 255, 0.4);
+  --cipher-overlay-dim: rgba(255, 255, 255, 0.8);
+  --logo3d-bg: #ffffff;
+  --controls-frost: rgba(255, 255, 255, 0.6);
+  --controls-frost-line: rgba(0, 0, 0, 0.08);
+  --inset: #ffffff; /* boxes inside a card */
+  --overlay: #ffffff; /* floating panels: must be opaque */
+  --tint: rgba(0, 0, 0, 0.05); /* hover and active fill on light surfaces */
+  --card-solid: #fafafa; /* the card color as a solid, for cut-out rings */
+  --hover-fill: #f0f0f0;
+  --hover-line: #a3a3a3;
+  --hide-btn-hidden: #0a0a0a; /* white would vanish on the light page */
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0b0f17;
-    --stage: #111827;
-    --ink: #f1f5f9;
-    --muted: #94a3b8;
-    --line: #263042;
-    --card: #172033;
-    --card-ink: #cbd5e1;
-    --blue: #3d9bff;
-    --on-blue: #ffffff;
-    --blue-soft: #0f2744;
-    --blue-line: #1e4b80;
-    --warn: #fbbf24;
-    --warn-soft: #3a2a0a;
+    --bg: #000000;
+    --stage: #000000;
+    --ink: #f5f5f5;
+    --muted: #a3a3a3;
+    /* Raised surfaces are white at three strengths over the black page */
+    --surface-1: rgba(255, 255, 255, 0.12);
+    --surface-2: rgba(255, 255, 255, 0.2);
+    --surface-3: rgba(255, 255, 255, 0.4);
+    --line: var(--surface-2);
+    --card: var(--surface-1);
+    --card-ink: #d4d4d4;
+    --brand: #ffc547;
+    --brand-ink: #ffc547;
+    --on-brand: #000000;
+    --brand-soft: #1f1806;
+    --brand-line: #5c4712;
+    --warn: #fb923c;
+    --warn-soft: #2b1505;
     --ok: #34d399;
     --ok-soft: #0b3326;
     --fail-soft: #3b1517;
     --fail-line: #6b2226;
-    --code-bg: #263042;
-    --ph-border: #334155;
-    --ph-a: #141c2b;
-    --ph-b: #182133;
-    --ph-tag: #64748b;
-    --shadow: rgba(0, 0, 0, 0.45);
-    --chrome-ink: #cbd5e1;
-    --chrome-btn: #1e293b;
-    --chrome-btn-ink: #f8fafc;
-    --chrome-line: #334155;
-    --notes-bg: #1e293b;
-    --notes-ink: #e2e8f0;
-    --notes-muted: #94a3b8;
+    --code-bg: var(--surface-2);
+    --ph-border: #333333;
+    --ph-a: #0d0d0d;
+    --ph-b: #141414;
+    --ph-tag: #737373;
+    --shadow: rgba(0, 0, 0, 0.6);
+    --chrome-ink: #d4d4d4;
+    --chrome-btn: var(--surface-1);
+    --chrome-btn-ink: #fafafa;
+    --chrome-line: var(--surface-2);
+    --notes-muted: #a3a3a3;
+    --maze-open: #525252;
+    --maze-shut: #141414;
+    --cipher-overlay: rgba(0, 0, 0, 0.4);
+    --cipher-overlay-dim: rgba(0, 0, 0, 0.8);
+    --logo3d-bg: #000000;
+    --controls-frost: rgba(255, 255, 255, 0.08);
+    --controls-frost-line: rgba(255, 255, 255, 0.1);
+    --inset: var(--surface-1);
+    --overlay: #1f1f1f; /* 12% white over black, opaque */
+    --tint: var(--surface-1);
+    --card-solid: #1f1f1f; /* 12% white over black, opaque */
+    --hover-fill: var(--surface-2);
+    --hover-line: var(--surface-3);
+    --hide-btn-hidden: #ffffff;
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0b0f17;
-  --stage: #111827;
-  --ink: #f1f5f9;
-  --muted: #94a3b8;
-  --line: #263042;
-  --card: #172033;
-  --card-ink: #cbd5e1;
-  --blue: #3d9bff;
-  --on-blue: #ffffff;
-  --blue-soft: #0f2744;
-  --blue-line: #1e4b80;
-  --warn: #fbbf24;
-  --warn-soft: #3a2a0a;
+  --bg: #000000;
+  --stage: #000000;
+  --ink: #f5f5f5;
+  --muted: #a3a3a3;
+  /* Raised surfaces are white at three strengths over the black page */
+  --surface-1: rgba(255, 255, 255, 0.12);
+  --surface-2: rgba(255, 255, 255, 0.2);
+  --surface-3: rgba(255, 255, 255, 0.4);
+  --line: var(--surface-2);
+  --card: var(--surface-1);
+  --card-ink: #d4d4d4;
+  --brand: #ffc547;
+  --brand-ink: #ffc547;
+  --on-brand: #000000;
+  --brand-soft: #1f1806;
+  --brand-line: #5c4712;
+  --warn: #fb923c;
+  --warn-soft: #2b1505;
   --ok: #34d399;
   --ok-soft: #0b3326;
   --fail-soft: #3b1517;
   --fail-line: #6b2226;
-  --code-bg: #263042;
-  --ph-border: #334155;
-  --ph-a: #141c2b;
-  --ph-b: #182133;
-  --ph-tag: #64748b;
-  --shadow: rgba(0, 0, 0, 0.45);
-  --chrome-ink: #cbd5e1;
-  --chrome-btn: #1e293b;
-  --chrome-btn-ink: #f8fafc;
-  --chrome-line: #334155;
-  --notes-bg: #1e293b;
-  --notes-ink: #e2e8f0;
-  --notes-muted: #94a3b8;
+  --code-bg: var(--surface-2);
+  --ph-border: #333333;
+  --ph-a: #0d0d0d;
+  --ph-b: #141414;
+  --ph-tag: #737373;
+  --shadow: rgba(0, 0, 0, 0.6);
+  --chrome-ink: #d4d4d4;
+  --chrome-btn: var(--surface-1);
+  --chrome-btn-ink: #fafafa;
+  --chrome-line: var(--surface-2);
+  --notes-muted: #a3a3a3;
+  --maze-open: #525252;
+  --maze-shut: #141414;
+  --cipher-overlay: rgba(0, 0, 0, 0.4);
+  --cipher-overlay-dim: rgba(0, 0, 0, 0.8);
+  --logo3d-bg: #000000;
+  --controls-frost: rgba(255, 255, 255, 0.08);
+  --controls-frost-line: rgba(255, 255, 255, 0.1);
+  --inset: var(--surface-1);
+  --overlay: #1f1f1f; /* 12% white over black, opaque */
+  --tint: var(--surface-1);
+  --card-solid: #1f1f1f; /* 12% white over black, opaque */
+  --hover-fill: var(--surface-2);
+  --hover-line: var(--surface-3);
+  --hide-btn-hidden: #ffffff;
   color-scheme: dark;
 }
 
@@ -151,6 +197,51 @@ select {
   overflow: hidden;
 }
 
+/* A slide with its own background (the cover) draws it behind the whole window, so the
+   stage lets it show through instead of painting its own color. */
+.stage.see-through {
+  background: transparent;
+}
+
+.slide-bg {
+  position: fixed;
+  inset: 0;
+  animation: fade-in-bg 220ms ease-out;
+}
+
+.slide-bg canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tones the animation down so the slide text stands out: darker in dark mode, paler in
+   light mode. `dim` doubles it. */
+.slide-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cipher-overlay);
+}
+
+.slide-bg.dim::after {
+  background: var(--cipher-overlay-dim);
+}
+
+/* The 3D logo renders on a transparent canvas; its glitch slices are filled with the page
+   color, so the wrapper paints that same color behind it. */
+.logo3d-bg {
+  background: var(--logo3d-bg);
+}
+
+@keyframes fade-in-bg {
+  from {
+    opacity: 0;
+  }
+}
+
 .slide {
   position: absolute;
   inset: 0;
@@ -176,7 +267,7 @@ select {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--brand-ink);
   margin-bottom: 10px;
 }
 
@@ -194,16 +285,17 @@ select {
   flex-direction: column;
 }
 
+/* The controls sit in the window's bottom-right corner, the same distance from the right
+   edge as from the bottom. They're outside the scaled stage, so they scale themselves to
+   stay the same size relative to the slide. */
 .slide-footer {
-  position: absolute;
-  left: 72px;
-  right: 72px;
-  bottom: 22px;
+  position: fixed;
+  right: calc(16px * var(--stage-scale));
+  bottom: calc(16px * var(--stage-scale));
   display: flex;
-  align-items: center;
-  justify-content: space-between;
   font-size: 13px;
-  color: var(--muted);
+  transform: scale(var(--stage-scale));
+  transform-origin: bottom right;
 }
 
 /* Controls */
@@ -211,18 +303,42 @@ select {
 .controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid var(--controls-frost-line);
+  background: var(--controls-frost);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: var(--chrome-ink);
+  transition:
+    background 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    backdrop-filter 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    -webkit-backdrop-filter 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Hidden: the frosted panel clears away with the controls, leaving only the hide button. */
+.controls.hidden {
+  border-color: transparent;
+  background: transparent;
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition:
+    background 160ms ease-in,
+    border-color 160ms ease-in,
+    backdrop-filter 160ms ease-in,
+    -webkit-backdrop-filter 160ms ease-in;
 }
 
 .nav-btn {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border-radius: 2px;
   border: 1px solid var(--chrome-line);
   background: var(--chrome-btn);
   color: var(--chrome-btn-ink);
-  font-size: 18px;
+  font-size: 14px;
   display: grid;
   place-items: center;
   cursor: pointer;
@@ -230,8 +346,9 @@ select {
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: var(--blue);
-  border-color: var(--blue);
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand);
 }
 
 .nav-btn:active:not(:disabled) {
@@ -244,8 +361,8 @@ select {
 }
 
 .progress {
-  width: 160px;
-  height: 4px;
+  width: 120px;
+  height: 3px;
   border-radius: 2px;
   background: var(--chrome-line);
   overflow: hidden;
@@ -253,59 +370,91 @@ select {
 
 .progress-fill {
   height: 100%;
-  background: var(--blue);
+  background: var(--brand);
   transition: width 200ms ease-out;
 }
 
 .counter {
   font-variant-numeric: tabular-nums;
-  font-size: 14px;
-  min-width: 52px;
+  font-size: 12px;
+  min-width: 44px;
   text-align: center;
 }
 
 .notes-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-left: 6px;
-  padding: 8px 12px;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
   border-radius: 2px;
   border: 1px solid var(--chrome-line);
   background: transparent;
   color: var(--chrome-ink);
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
 }
 
-.notes-btn.active {
-  background: var(--chrome-btn);
-  color: var(--chrome-btn-ink);
+.notes-btn:hover {
+  border-color: var(--hover-line);
+  background: var(--hover-fill);
 }
 
-.notes {
-  position: fixed;
-  right: 20px;
-  bottom: 80px;
-  width: 380px;
-  max-height: 50vh;
-  overflow: auto;
-  padding: 16px 18px;
-  border-radius: 4px;
-  background: var(--notes-bg);
-  color: var(--notes-ink);
-  border: 1px solid var(--chrome-line);
-  font-size: 14px;
-  line-height: 1.5;
-  box-shadow: 0 10px 30px var(--shadow);
+/* Hiding the controls keeps their space, so the hide button stays put in the corner. The
+   group fades and slides toward the button as it hides, and back out as it shows; the
+   button itself turns full white so it's easy to find and switch off again. */
+.controls-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition:
+    opacity 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    visibility 0s;
 }
 
-.notes p {
-  margin: 8px 0 0;
+.controls.hidden .controls-group {
+  opacity: 0;
+  transform: translateX(16px);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease-in,
+    transform 160ms ease-in,
+    visibility 0s linear 160ms;
 }
 
-.notes .muted {
-  color: var(--notes-muted);
+.hide-btn {
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+  transition: color 160ms;
+}
+
+.hide-btn svg {
+  animation: hide-icon-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes hide-icon-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controls-group,
+  .controls.hidden .controls-group {
+    transform: none;
+  }
+
+  .hide-btn svg {
+    animation: none;
+  }
+}
+
+.controls.hidden .hide-btn {
+  color: var(--hide-btn-hidden);
 }
 
 /* Slide building blocks */
@@ -378,50 +527,121 @@ select {
 .card.task {
   display: flex;
   flex-direction: column;
+  min-height: 0;
+}
+
+/* Keep the task cards inside the slide: the images shrink to fit instead of setting
+   the cards' height. */
+.task-stack {
+  min-height: 0;
+}
+
+.task-grid {
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
 }
 
 /* Prompts slide */
 
-.prompt-rows {
+/* The prompts: one card per task, each prompt and edit in its own copyable box. */
+.prompt-cards {
+  min-height: 0;
+}
+
+.prompt-card {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  flex: 1;
+  gap: 8px;
+  padding: 14px;
 }
 
-.prompt-row {
+.prompt-head {
   display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--line);
+  align-items: center;
+  gap: 12px;
 }
 
-.prompt-row:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.prompt-row .task-letter {
+.prompt-head .task-letter {
   flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
   margin: 0;
 }
 
-.prompt-row h3 {
-  margin: 0 0 4px;
+.prompt-head h3 {
+  margin: 0;
   font-size: 20px;
 }
 
-.prompt-full {
-  margin: 0;
-  font-size: 18px;
-  line-height: 1.45;
+.copy-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 10px 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--inset);
 }
 
-.prompt-edit {
-  margin: 6px 0 0;
-  font-size: 16px;
+/* The prompt box takes the spare height, so the edit boxes line up across cards. */
+.copy-box:not(.edit) {
+  flex: 1;
+}
+
+.copy-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-ink);
+}
+
+.prompt-card .prompt-full {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+/* Room for two lines in every card, so the edit boxes match in height. */
+.prompt-card .prompt-edit {
+  margin: 0;
+  min-height: 2.8em;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--card-ink);
+}
+
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: transparent;
   color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.copy-button:hover {
+  border-color: var(--brand);
+  color: var(--brand-ink);
+}
+
+.copy-button.copied {
+  border-color: var(--ok);
+  color: var(--ok);
 }
 
 .card.task .placeholder {
@@ -430,9 +650,33 @@ select {
   font-size: 15px;
 }
 
+.card.task .task-image {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin-top: 16px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* A heavily blurred image. The scale pushes the blur's soft edges outside the frame so
+   the corners stay solid. */
+.card.task .task-image.blurred {
+  overflow: hidden;
+}
+
+.task-image.blurred img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(24px);
+  transform: scale(1.25);
+}
+
 .card.accent {
-  background: var(--blue-soft);
-  border-color: var(--blue-line);
+  background: var(--brand-soft);
+  border-color: var(--brand-line);
 }
 
 .card.fail {
@@ -440,25 +684,62 @@ select {
   border-color: var(--fail-line);
 }
 
+.card.model {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .card.model h3 {
   font-size: 26px;
 }
 
-.model-group {
-  font-size: 13px;
+/* A full-bleed image behind the card, darkened at the bottom so the text stays white
+   and readable in either theme. Both layers start at the border edge, so the image and
+   the darkening cover the whole card, border included. */
+.card.model.has-image {
+  background-image:
+    linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.5) 40%, rgb(0 0 0 / 0) 75%),
+    var(--card-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  border-color: transparent;
+}
+
+.card.model.has-image h3 {
+  color: #fff;
+}
+
+.card.model.has-image p {
+  color: rgb(255 255 255 / 0.85);
+}
+
+.model-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 16px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--blue);
-  margin-bottom: 6px;
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+
+.model-link:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .task-letter {
   width: 40px;
   height: 40px;
   border-radius: 2px;
-  background: var(--blue);
-  color: var(--on-blue);
+  background: var(--brand);
+  color: var(--on-brand);
   font-weight: 700;
   font-size: 16px;
   font-variant-numeric: tabular-nums;
@@ -479,27 +760,27 @@ select {
   color: var(--warn);
 }
 
-.banner.ok {
-  background: var(--ok-soft);
-  color: var(--ok);
+.banner.info {
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand-line);
 }
 
 .banner.link {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--blue-soft);
-  color: var(--blue);
-  border: 1px solid var(--blue-line);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand-line);
   text-decoration: none;
 }
 
 .banner.link:hover {
-  border-color: var(--blue);
+  border-color: var(--brand);
 }
 
 code {
-  font-family: var(--font-mono);
   font-size: 0.92em;
   background: var(--code-bg);
   padding: 1px 6px;
@@ -521,50 +802,76 @@ code {
 
 .pairs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
-  flex: 1;
+  align-content: start;
 }
 
 .pair {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
   background: var(--card);
   border: 1px solid var(--line);
+  border-top: 3px solid var(--brand);
   border-radius: 4px;
   padding: 20px 22px;
 }
 
-.pair-head h3 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.pair-people {
+.pair-head {
   display: flex;
-  gap: 10px;
-}
-
-.person {
-  width: 96px;
-  height: 96px;
-  border-radius: 2px;
-  border: 2px dashed var(--ph-border);
-  background: var(--stage);
-  color: var(--muted);
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 13px;
+  gap: 14px;
 }
 
-.person svg {
-  font-size: 28px;
-  color: var(--ph-tag);
+.pair-head .task-letter {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.pair h3 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.pair-credits {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--card-ink);
+}
+
+.pair-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.pair-seats {
+  display: flex;
+}
+
+.pair-seats svg {
+  width: 32px;
+  height: 32px;
+  padding: 7px;
+  border-radius: 50%;
+  border: 2px solid var(--card-solid);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+}
+
+.pair-seats svg + svg {
+  margin-left: -8px;
+}
+
+.pair-foot .model-link {
+  align-self: center;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 /* Placeholder */
@@ -603,11 +910,447 @@ code {
   color: var(--ph-tag);
 }
 
+/* Levels: a row of mazes that narrow from every possibility to targeted possibilities */
+
+.levels {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 36px;
+}
+
+.levels-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.level {
+  margin: 0;
+}
+
+.level figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.level-num {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-ink);
+}
+
+.level-name {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.level.final .level-name {
+  color: var(--brand-ink);
+}
+
+.levels-axis {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* A line that runs into an arrowhead at the right end. */
+.levels-axis-line {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, var(--maze-open), var(--brand));
+}
+
+.levels-axis-line::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--brand);
+  border-right: 2px solid var(--brand);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Each level's maze: open cells are possibilities the model can still take, shut cells
+   are ruled out by the prompt. The last level keeps one route, drawn in the brand color. */
+.maze {
+  display: grid;
+  grid-template-columns: repeat(var(--maze-size), 1fr);
+  gap: 2px;
+  aspect-ratio: 1;
+}
+
+.maze-cell {
+  border-radius: 2px;
+  background: var(--maze-shut);
+}
+
+.maze-cell.open {
+  background: var(--maze-open);
+}
+
+.maze-cell.route {
+  background: var(--brand);
+}
+
+/* Bento of mockups */
+
+.bento {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 0.7fr 0.7fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+}
+
+.bento img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.bento-notepad { grid-area: 1 / 1; }
+.bento-notebooks { grid-area: 2 / 1; }
+.bento-tablecloth { grid-area: 1 / 2 / 2 / 4; }
+.bento-ephemeral { grid-area: 2 / 2; }
+.bento-sandbox { grid-area: 2 / 3; }
+.bento-bugs { grid-area: 1 / 4 / 3 / 5; }
+
+/* Card rows with aligned text */
+
+/* The cards share rows, so headings and paragraphs line up across all three even when
+   one heading wraps. The number sits at the top and the text at the bottom. */
+.card-row {
+  grid-template-rows: auto 1fr auto auto;
+  row-gap: 0;
+}
+
+.card-row .card {
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+}
+
+.card-row .task-letter {
+  grid-row: 1;
+}
+
+.card-row h3 {
+  grid-row: 3;
+  align-self: end;
+}
+
+.card-row p {
+  grid-row: 4;
+}
+
+/* Further exploration: three equal columns, each an image over a brand rule, centred in
+   the space below the title. */
+.explore {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* The wormhole animation, filling the space above the three columns */
+.explore-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+.explore-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.explore-cols > div {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.explore-text {
+  padding-top: 24px;
+  border-top: 3px solid var(--brand);
+}
+
+.explore-num {
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand-ink);
+}
+
+.explore-cols h3 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.explore-cols p {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Wormhole animation panel: the canvas fills the box, with film grain on top */
+.wormhole-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--stage);
+}
+
+.wormhole-panel canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.wormhole-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  background-size: 40px;
+  opacity: 0.1;
+}
+
+/* Before and after */
+
+.before-after,
+.gallery {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.before-after-arrow {
+  flex-shrink: 0;
+  color: var(--brand-ink);
+}
+
+.shot {
+  position: relative;
+  height: 100%;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.shot img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+/* Rows that span the full width: the images stretch to fill it and crop to fit.
+   Gallery images share the width equally; before-and-after images share it in
+   proportion to their aspect ratio (--ar), so both crop by the same amount. */
+.gallery.fill .shot,
+.before-after .shot {
+  flex: 1 1 0;
+}
+
+.before-after .shot {
+  flex-grow: var(--ar, 1);
+}
+
+.gallery.fill .shot img,
+.before-after .shot img {
+  width: 100%;
+  max-width: none;
+  object-position: top; /* crop from the bottom: these images keep their key content up top */
+}
+
+/* The reference images, inset in the bottom-left corner of the result they produced. */
+.ref-thumbs {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.before-after .shot .ref-thumbs img {
+  width: 96px;
+  height: 96px;
+  padding: 6px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.4);
+}
+
+/* Swag: the two tees run full height on the right, the logo tee furthest right. To their
+   left, the stickers span two rows beside the booth and the bug cap, with the desk caps
+   along the bottom. Every image crops to fill its cell. */
+.swag {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.6fr 1.6fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    'stickers booth back front'
+    'stickers bugs back front'
+    'ephemeral sandbox back front';
+  gap: 12px;
+}
+
+.swag .shot {
+  height: auto;
+}
+
+.swag figcaption {
+  white-space: nowrap;
+}
+
+.swag .shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* Show every image uncropped, even when the row is too wide for full height. */
+.gallery.whole .shot {
+  border: none;
+  border-radius: 0;
+}
+
+.gallery.whole .shot img {
+  object-fit: contain;
+}
+
+.shot figcaption,
+.prompt-result figcaption {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.6);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Before-and-after shots keep their reference images in the bottom-left corner, so their
+   captions sit at the top instead. */
+.before-after .shot figcaption {
+  top: 10px;
+  bottom: auto;
+}
+
+/* Glass illustrations that take turns in the middle of a shot. Each fades out over 600ms
+   and the next fades in after it, so two never show at once. */
+.glass-cycle {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.gallery .shot .glass-cycle img {
+  grid-area: 1 / 1;
+  width: 72%;
+  height: auto;
+  max-height: 60%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.gallery .shot .glass-cycle img.shown {
+  opacity: 1;
+  transition-delay: 600ms;
+}
+
 /* Poster drop zones */
 
 .poster-grid {
   min-height: 0;
   grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.poster-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.poster-slot .poster-drop {
+  flex: 1;
+}
+
+.poster-model {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.poster-model select {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.poster-model select:focus-visible {
+  outline: 2px solid var(--brand-ink);
+  outline-offset: 1px;
 }
 
 .poster-drop {
@@ -626,9 +1369,9 @@ code {
 }
 
 .poster-drop.dragging {
-  border-color: var(--blue);
+  border-color: var(--brand);
   border-style: dashed;
-  background: var(--blue-soft);
+  background: var(--brand-soft);
 }
 
 .poster-drop-empty {
@@ -651,11 +1394,11 @@ code {
 }
 
 button.poster-drop-empty:hover {
-  background: var(--blue-soft);
+  background: var(--brand-soft);
 }
 
 .poster-drop-empty svg {
-  color: var(--blue);
+  color: var(--brand-ink);
   margin-bottom: 4px;
 }
 
@@ -703,7 +1446,7 @@ button.poster-drop-empty:hover {
   padding: 7px 10px;
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 2px;
-  background: rgba(15, 23, 42, 0.55);
+  background: rgba(10, 10, 10, 0.55);
   color: #ffffff;
   font: inherit;
   font-size: 14px;
@@ -712,13 +1455,13 @@ button.poster-drop-empty:hover {
 }
 
 .poster-drop-actions button:hover {
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(10, 10, 10, 0.8);
 }
 
 .poster-drop-actions button.primary {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: var(--on-blue);
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand);
 }
 
 .poster-drop-actions button.primary:hover {
@@ -777,8 +1520,8 @@ button.poster-drop-empty:hover {
   z-index: 1;
   padding: 6px 12px;
   border-radius: 2px;
-  background: rgba(15, 23, 42, 0.85);
-  color: #e2e8f0;
+  background: rgba(10, 10, 10, 0.85);
+  color: #e5e5e5;
   font-size: 18px;
   font-weight: 600;
 }
@@ -794,14 +1537,14 @@ button.poster-drop-empty:hover {
   height: 44px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 2px;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(10, 10, 10, 0.85);
   color: #ffffff;
   font-size: 22px;
   cursor: pointer;
 }
 
 .lightbox-close:hover {
-  background: rgba(51, 65, 85, 0.95);
+  background: rgba(64, 64, 64, 0.95);
 }
 
 .lightbox-zoom {
@@ -816,7 +1559,7 @@ button.poster-drop-empty:hover {
   padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(10, 10, 10, 0.85);
 }
 
 .lightbox-zoom button {
@@ -853,7 +1596,7 @@ button.poster-drop-empty:hover {
 
 .lightbox-zoom-level {
   min-width: 56px;
-  color: #e2e8f0;
+  color: #e5e5e5;
   font-size: 15px;
   font-weight: 600;
   text-align: center;
@@ -885,12 +1628,32 @@ button.poster-drop-empty:hover {
   justify-content: center;
 }
 
-.cover-kicker {
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--blue);
+.cover.centered {
+  align-items: center;
+  text-align: center;
+}
+
+.cover.centered .cover-title {
+  margin: 0;
+}
+
+/* The logo sits in the slide's top-left corner, on the same margins as other slides'
+   section labels. Its wordmark is white for dark mode; light mode swaps in a dark copy. */
+.cover-logo {
+  position: absolute;
+  top: 48px;
+  left: 72px;
+  height: 30px;
+  width: auto;
+}
+
+.cover-logo.for-light,
+:root[data-theme='light'] .cover-logo.for-dark {
+  display: none;
+}
+
+:root[data-theme='light'] .cover-logo.for-light {
+  display: block;
 }
 
 .cover-title {
@@ -913,7 +1676,7 @@ button.poster-drop-empty:hover {
   gap: 4px;
   margin-top: 56px;
   padding-left: 18px;
-  border-left: 3px solid var(--blue);
+  border-left: 3px solid var(--brand);
 }
 
 .cover-name {
@@ -958,8 +1721,8 @@ button.poster-drop-empty:hover {
   border-radius: 2px;
   display: grid;
   place-items: center;
-  background: var(--blue);
-  color: var(--on-blue);
+  background: var(--brand);
+  color: var(--on-brand);
   font-size: 16px;
   font-weight: 700;
 }
@@ -977,268 +1740,45 @@ button.poster-drop-empty:hover {
   font-variant-numeric: tabular-nums;
 }
 
-/* Tables */
-
-.grid-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 17px;
-}
-
-.grid-table th,
-.grid-table td {
-  border: 1px solid var(--line);
-  padding: 14px 12px;
-  text-align: left;
-}
-
-.grid-table th {
-  background: var(--card);
-  font-size: 15px;
-  white-space: nowrap;
-}
-
-.grid-table.walk td {
-  padding: 22px 14px;
-  font-size: 18px;
-}
-
-.grid-table td.check-cell {
-  padding: 0;
-}
-
-.check-cell button {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  min-height: 66px;
-  border: none;
-  background: transparent;
-  color: var(--blue);
-  font-size: 34px;
-  cursor: pointer;
-}
-
-.check-cell button:hover {
-  background: var(--blue-soft);
-}
-
-.check-cell button:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: -2px;
-}
-
-.grid-table.closing td {
-  font-size: 24px;
-  padding: 18px 22px;
-}
-
-.grid-table.closing td:first-child {
-  width: 45%;
-  font-weight: 600;
-}
-
-.grid-table.closing .job-detail {
-  display: block;
-  margin-top: 4px;
-  font-size: 16px;
-  font-weight: 400;
-  color: var(--muted);
-}
-
-/* Model picker */
-
-/* height: 1px lets the trigger fill the cell with height: 100%. */
-.grid-table.closing td.picker-cell {
-  position: relative;
-  padding: 0;
-  height: 1px;
-}
-
-.picker-trigger {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 100%;
-  padding: 12px 18px 12px 22px;
-  cursor: pointer;
-}
-
-.picker-trigger:hover,
-.picker-trigger.open {
-  background: var(--blue-soft);
-}
-
-.picker-trigger:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: -2px;
-}
-
-.picker-placeholder {
-  flex: 1;
-  color: var(--ph-tag);
-}
-
-.picker-caret {
-  flex-shrink: 0;
-  font-size: 18px;
-  color: var(--muted);
-  transition: transform 150ms;
-}
-
-.picker-trigger.open .picker-caret {
-  transform: rotate(180deg);
-}
-
-.pills {
+/* A single line of large text that fills the slide body. */
+.statement {
   flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.pill {
-  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 5px 6px 5px 12px;
-  border: 1px solid var(--blue-line);
-  border-radius: 2px;
-  background: var(--blue-soft);
-  color: var(--blue);
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.pill button {
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border: none;
-  border-radius: 2px;
-  background: transparent;
-  color: inherit;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.pill button:hover {
-  background: var(--blue);
-  color: var(--on-blue);
-}
-
-.picker-menu {
-  position: absolute;
-  top: calc(100% - 6px);
-  left: 12px;
-  z-index: 10;
-  min-width: 260px;
+  justify-content: center;
   margin: 0;
-  padding: 6px;
-  list-style: none;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--stage);
-  box-shadow: 0 12px 32px var(--shadow);
-  animation: picker-in 120ms ease-out;
-}
-
-.picker-menu.up {
-  top: auto;
-  bottom: calc(100% - 6px);
-}
-
-.picker-menu button {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 9px 12px;
-  border: none;
-  border-radius: 2px;
-  background: transparent;
+  font-size: 120px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
   color: var(--ink);
-  font-size: 18px;
-  font-weight: 500;
-  text-align: left;
-  cursor: pointer;
 }
 
-.picker-menu button:hover,
-.picker-menu button:focus-visible {
-  background: var(--blue-soft);
-  outline: none;
+/* Round 1 share-out: the number sits at the top, the question at the bottom. */
+.share .card {
+  display: flex;
+  flex-direction: column;
 }
 
-.picker-check {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border: 1.5px solid var(--ph-border);
-  border-radius: 2px;
-  font-size: 14px;
-}
-
-.picker-menu button[aria-selected='true'] .picker-check {
-  border-color: var(--blue);
-  background: var(--blue);
-  color: var(--on-blue);
-}
-
-@keyframes picker-in {
-  from {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .picker-menu {
-    animation: none;
-  }
-
-  .picker-caret {
-    transition: none;
-  }
-}
-
-/* Techniques */
-
-.parts .card p {
-  font-size: 17px;
+.share .task-letter {
+  margin-bottom: auto;
 }
 
 /* Annotated prompt */
 
-.annotated {
-  display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 36px;
-  flex: 1;
-}
-
 .annotated-prompt {
   margin: 0;
-  font-size: 21px;
-  line-height: 1.8;
+  font-size: 18px;
+  line-height: 1.75;
 }
 
+/* Every part gets the same soft highlight; hovering a card brightens one and fades the rest. */
 .seg {
-  background: var(--blue-soft);
-  border-bottom: 2px solid var(--blue-line);
+  background: var(--brand-soft);
+  border-bottom: 2px solid var(--brand-line);
   padding: 2px 4px;
   margin-right: 6px;
-  border-radius: 4px;
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
-}
-
-.seg.alt {
-  background: var(--code-bg);
-  border-bottom-color: var(--ph-border);
 }
 
 .nowrap {
@@ -1257,52 +1797,161 @@ button.poster-drop-empty:hover {
   height: 22px;
   padding: 0 4px;
   border-radius: 2px;
-  background: var(--blue);
-  color: var(--on-blue);
+  background: var(--brand);
+  color: var(--on-brand);
   font-size: 12px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.annotations {
-  list-style: none;
+/* The prompt in full across the top, then one card per part underneath. */
+.prompt-top {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 16px;
+}
+
+.prompt-whole .annotated-prompt {
+  font-size: 20px;
+  line-height: 1.8;
+}
+
+/* Hovering a part card picks out its part of the prompt and fades the others. */
+.prompt-whole .seg {
+  transition:
+    opacity 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.prompt-whole .has-active .seg:not(.active) {
+  opacity: 0.3;
+}
+
+.prompt-whole .seg.active {
+  background: var(--brand-soft);
+  border-bottom-color: var(--brand);
+}
+
+.prompt-parts .card.active {
+  border-color: var(--brand);
+}
+
+/* What the prompt produced, cropped to the height of the prompt beside it. */
+.prompt-result {
+  position: relative;
   margin: 0;
-  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.prompt-result img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Cards share rows, so every number, heading and description starts at the same height
+   even when a heading wraps or one description runs longer than the others. */
+.prompt-parts {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto auto 1fr;
+  column-gap: 16px;
+  flex: 1;
+}
+
+.prompt-parts .card {
+  transition: border-color 150ms ease;
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+  padding: 20px;
+}
+
+.prompt-parts .seg-num {
+  justify-self: start;
+  margin-bottom: 14px;
+}
+
+.prompt-parts h3 {
+  margin-bottom: 8px;
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.prompt-parts p {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* Competition brief */
+
+/* The brief table, with the blank tees to download stacked to its right. */
+.brief {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.brief .brief-list {
+  flex: 1;
+  min-width: 0;
+}
+
+.tee-downloads {
+  width: 220px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-}
-
-.annotations li {
-  display: flex;
   gap: 12px;
-  align-items: flex-start;
 }
 
-.annotations li .seg-num {
-  flex-shrink: 0;
-  margin-top: 2px;
+/* The tees sit on the theme's card surface like the deck's other cards, each lit by a soft
+   spotlight so the black shirt still reads on the dark theme. */
+.tee-download {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--card);
 }
 
-.annotations strong {
-  font-size: 17px;
+.tee-download img {
+  display: block;
+  height: 120px;
+  margin: 0 auto 8px;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.22), transparent);
 }
 
-.annotations p {
-  margin: 2px 0 0;
-  font-size: 16px;
-  line-height: 1.45;
-  color: var(--card-ink);
+.tee-download-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
 }
 
-/* Poster brief */
+.tee-download-foot a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: border-color 150ms ease, color 150ms ease;
+}
 
-.brief {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 48px;
-  flex: 1;
-  min-height: 0;
+.tee-download-foot a:hover {
+  border-color: var(--brand);
+  color: var(--ink);
 }
 
 .brief-list {
@@ -1311,11 +1960,11 @@ button.poster-drop-empty:hover {
   flex-direction: column;
 }
 
-.brief-list div {
+.brief-list > div {
   display: grid;
   grid-template-columns: 170px 1fr;
   gap: 16px;
-  padding: 16px 0;
+  padding: 11px 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -1330,36 +1979,49 @@ button.poster-drop-empty:hover {
 
 .brief-list dd {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
+  line-height: 1.3;
   font-weight: 600;
 }
 
-.poster-frame {
-  display: flex;
-  flex-direction: column;
+.inline-link {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 0;
+  gap: 4px;
+  margin-left: 8px;
+  font-size: 18px;
+  color: var(--brand-ink);
+  text-decoration: none;
 }
 
-.poster {
-  /* 2:3, the proportions of a 24 × 36 in poster. */
-  width: 280px;
-  height: 420px;
-  border-radius: 4px;
-  background: var(--blue);
-  color: var(--on-blue);
-  display: flex;
-  align-items: flex-end;
-  padding: 24px;
-  font-size: 30px;
-  font-weight: 800;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+.inline-link:hover {
+  text-decoration: underline;
 }
 
-.poster-size {
-  font-size: 14px;
+.color-note {
   color: var(--muted);
-  font-variant-numeric: tabular-nums;
+  font-weight: 500;
 }
+
+.swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0 2px;
+  border-radius: 2px;
+  vertical-align: -0.05em;
+}
+
+.idea-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.idea-tags span {
+  padding: 2px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 18px;
+}
+
