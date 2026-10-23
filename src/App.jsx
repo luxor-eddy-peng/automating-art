@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   ArrowLeft,
   ArrowLineLeft,
@@ -71,7 +71,16 @@ export default function App() {
   const scale = useStageScale()
   const [theme, toggleTheme] = useTheme()
 
+  const deckRef = useRef(null)
+
+  // Before moving forward, the slide gets a cancelable 'deck:next' event on the deck, so it
+  // can use the press itself (to play a reveal it's still holding back) and stay put.
   const go = useCallback((delta) => {
+    if (delta > 0) {
+      const next = new Event('deck:next', { cancelable: true })
+      deckRef.current?.dispatchEvent(next)
+      if (next.defaultPrevented) return
+    }
     setIndex((i) => Math.min(Math.max(i + delta, 0), slides.length - 1))
   }, [])
 
@@ -116,12 +125,19 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [go, toggleTheme])
 
+  // Whether this slide was reached with Next from the one before it, so a slide can play
+  // an entrance that continues from that slide. Fixed per slide, not per render.
+  const entry = useRef({ index, fromPrevious: false })
+  if (entry.current.index !== index) {
+    entry.current = { index, fromPrevious: index === entry.current.index + 1 }
+  }
+
   const slide = slides[index]
   const atStart = index === 0
   const atEnd = index === slides.length - 1
 
   return (
-    <div className="deck">
+    <div ref={deckRef} className="deck" style={{ '--stage-scale': scale }}>
       {slide.background === 'cipher' && <CipherBackground scale={scale} dim={slide.backgroundDim} />}
       {slide.background === 'logo3d' && <Logo3DBackground scale={scale} dim={slide.backgroundDim} />}
       <div className="stage-wrap" style={{ width: STAGE_W * scale, height: STAGE_H * scale }}>
@@ -129,7 +145,7 @@ export default function App() {
           className={`stage ${slide.background ? 'see-through' : ''}`}
           style={{ width: STAGE_W, height: STAGE_H, transform: `scale(${scale})` }}
         >
-          <div className="slide" key={index}>
+          <div className="slide" key={index} data-from-previous={entry.current.fromPrevious || undefined}>
             {slide.section && <div className="section">{slide.section}</div>}
             {slide.title && <h1 className="slide-title">{slide.title}</h1>}
             <div className="slide-body">{slide.body}</div>
@@ -138,7 +154,7 @@ export default function App() {
       </div>
 
       {/* Pinned to the window's corner rather than the slide's, scaled like the slide */}
-      <div className="slide-footer" style={{ '--stage-scale': scale }}>
+      <div className="slide-footer">
         <div className={`controls ${hideControls ? 'hidden' : ''}`}>
           <div className="controls-group" aria-hidden={hideControls}>
             <button

@@ -1,0 +1,2511 @@
+:root {
+  --font-sans: 'Inter Tight Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bg: #f5f5f5;
+  --stage: #ffffff;
+  --ink: #0a0a0a;
+  --muted: #666666;
+  --line: #e5e5e5;
+  --card: #fafafa;
+  --card-ink: #333333;
+  --brand: #ffc547; /* fills, borders and highlights */
+  --brand-ink: #946200; /* brand as text: the yellow itself is unreadable on white */
+  --on-brand: #000000;
+  --brand-soft: #fff6e0;
+  --brand-line: #f5d68c;
+  --warn: #c2410c;
+  --warn-soft: #ffedd5;
+  --ok: #047857;
+  --ok-soft: #d1fae5;
+  --fail-soft: #fee2e2;
+  --fail-line: #fecaca;
+  --code-bg: #eeeeee;
+  --ph-border: #d4d4d4;
+  --ph-a: #fafafa;
+  --ph-b: #f2f2f2;
+  --ph-tag: #a3a3a3;
+  --shadow: rgba(0, 0, 0, 0.14);
+  --chrome-ink: #333333;
+  --chrome-btn: #ffffff;
+  --chrome-btn-ink: #0a0a0a;
+  --chrome-line: #d4d4d4;
+  --notes-muted: #666666;
+  --maze-open: #a3a3a3;
+  --maze-shut: #ededed;
+  --cipher-overlay: rgba(255, 255, 255, 0.4);
+  --cipher-overlay-dim: rgba(255, 255, 255, 0.8);
+  --logo3d-bg: #ffffff;
+  --controls-frost: rgba(255, 255, 255, 0.6);
+  --controls-frost-line: rgba(0, 0, 0, 0.08);
+  --inset: #ffffff; /* boxes inside a card */
+  --overlay: #ffffff; /* floating panels: must be opaque */
+  --tint: rgba(0, 0, 0, 0.05); /* hover and active fill on light surfaces */
+  --card-solid: #fafafa; /* the card color as a solid, for cut-out rings */
+  --hover-fill: #f0f0f0;
+  --hover-line: #a3a3a3;
+  --hide-btn-hidden: #0a0a0a; /* white would vanish on the light page */
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #000000;
+    --stage: #000000;
+    --ink: #f5f5f5;
+    --muted: #a3a3a3;
+    /* Raised surfaces are white at three strengths over the black page */
+    --surface-1: rgba(255, 255, 255, 0.12);
+    --surface-2: rgba(255, 255, 255, 0.2);
+    --surface-3: rgba(255, 255, 255, 0.4);
+    --line: var(--surface-2);
+    --card: var(--surface-1);
+    --card-ink: #d4d4d4;
+    --brand: #ffc547;
+    --brand-ink: #ffc547;
+    --on-brand: #000000;
+    --brand-soft: #1f1806;
+    --brand-line: #5c4712;
+    --warn: #fb923c;
+    --warn-soft: #2b1505;
+    --ok: #34d399;
+    --ok-soft: #0b3326;
+    --fail-soft: #3b1517;
+    --fail-line: #6b2226;
+    --code-bg: var(--surface-2);
+    --ph-border: #333333;
+    --ph-a: #0d0d0d;
+    --ph-b: #141414;
+    --ph-tag: #737373;
+    --shadow: rgba(0, 0, 0, 0.6);
+    --chrome-ink: #d4d4d4;
+    --chrome-btn: var(--surface-1);
+    --chrome-btn-ink: #fafafa;
+    --chrome-line: var(--surface-2);
+    --notes-muted: #a3a3a3;
+    --maze-open: #525252;
+    --maze-shut: #141414;
+    --cipher-overlay: rgba(0, 0, 0, 0.4);
+    --cipher-overlay-dim: rgba(0, 0, 0, 0.8);
+    --logo3d-bg: #000000;
+    --controls-frost: rgba(255, 255, 255, 0.08);
+    --controls-frost-line: rgba(255, 255, 255, 0.1);
+    --inset: var(--surface-1);
+    --overlay: #1f1f1f; /* 12% white over black, opaque */
+    --tint: var(--surface-1);
+    --card-solid: #1f1f1f; /* 12% white over black, opaque */
+    --hover-fill: var(--surface-2);
+    --hover-line: var(--surface-3);
+    --hide-btn-hidden: #ffffff;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #000000;
+  --stage: #000000;
+  --ink: #f5f5f5;
+  --muted: #a3a3a3;
+  /* Raised surfaces are white at three strengths over the black page */
+  --surface-1: rgba(255, 255, 255, 0.12);
+  --surface-2: rgba(255, 255, 255, 0.2);
+  --surface-3: rgba(255, 255, 255, 0.4);
+  --line: var(--surface-2);
+  --card: var(--surface-1);
+  --card-ink: #d4d4d4;
+  --brand: #ffc547;
+  --brand-ink: #ffc547;
+  --on-brand: #000000;
+  --brand-soft: #1f1806;
+  --brand-line: #5c4712;
+  --warn: #fb923c;
+  --warn-soft: #2b1505;
+  --ok: #34d399;
+  --ok-soft: #0b3326;
+  --fail-soft: #3b1517;
+  --fail-line: #6b2226;
+  --code-bg: var(--surface-2);
+  --ph-border: #333333;
+  --ph-a: #0d0d0d;
+  --ph-b: #141414;
+  --ph-tag: #737373;
+  --shadow: rgba(0, 0, 0, 0.6);
+  --chrome-ink: #d4d4d4;
+  --chrome-btn: var(--surface-1);
+  --chrome-btn-ink: #fafafa;
+  --chrome-line: var(--surface-2);
+  --notes-muted: #a3a3a3;
+  --maze-open: #525252;
+  --maze-shut: #141414;
+  --cipher-overlay: rgba(0, 0, 0, 0.4);
+  --cipher-overlay-dim: rgba(0, 0, 0, 0.8);
+  --logo3d-bg: #000000;
+  --controls-frost: rgba(255, 255, 255, 0.08);
+  --controls-frost-line: rgba(255, 255, 255, 0.1);
+  --inset: var(--surface-1);
+  --overlay: #1f1f1f; /* 12% white over black, opaque */
+  --tint: var(--surface-1);
+  --card-solid: #1f1f1f; /* 12% white over black, opaque */
+  --hover-fill: var(--surface-2);
+  --hover-line: var(--surface-3);
+  --hide-btn-hidden: #ffffff;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--stage);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+/* Form controls don't inherit the page font by default. */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/* Deck shell */
+
+.deck {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.stage-wrap {
+  position: relative;
+}
+
+.stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  background: var(--stage);
+  overflow: hidden;
+}
+
+/* A slide with its own background (the cover) draws it behind the whole window, so the
+   stage lets it show through instead of painting its own color. */
+.stage.see-through {
+  background: transparent;
+}
+
+.slide-bg {
+  position: fixed;
+  inset: 0;
+  animation: fade-in-bg 220ms ease-out;
+}
+
+.slide-bg canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tones the animation down so the slide text stands out: darker in dark mode, paler in
+   light mode. `dim` doubles it. */
+.slide-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cipher-overlay);
+}
+
+.slide-bg.dim::after {
+  background: var(--cipher-overlay-dim);
+}
+
+/* The 3D logo renders on a transparent canvas; its glitch slices are filled with the page
+   color, so the wrapper paints that same color behind it. */
+.logo3d-bg {
+  background: var(--logo3d-bg);
+}
+
+@keyframes fade-in-bg {
+  from {
+    opacity: 0;
+  }
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  padding: 48px 72px 96px;
+  display: flex;
+  flex-direction: column;
+  animation: fade-in 220ms ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.section {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--brand-ink);
+  margin-bottom: 10px;
+}
+
+.slide-title {
+  font-size: 46px;
+  line-height: 1.1;
+  margin: 0 0 32px;
+  letter-spacing: -0.02em;
+}
+
+.slide-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The controls sit in the window's bottom-right corner, the same distance from the right
+   edge as from the bottom. They're outside the scaled stage, so they scale themselves to
+   stay the same size relative to the slide. */
+.slide-footer {
+  position: fixed;
+  z-index: 2;
+  right: calc(16px * var(--stage-scale));
+  bottom: calc(16px * var(--stage-scale));
+  display: flex;
+  font-size: 13px;
+  transform: scale(var(--stage-scale));
+  transform-origin: bottom right;
+}
+
+/* Controls */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid var(--controls-frost-line);
+  background: var(--controls-frost);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--chrome-ink);
+  transition:
+    background 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    backdrop-filter 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    -webkit-backdrop-filter 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Hidden: the frosted panel clears away with the controls, leaving only the hide button. */
+.controls.hidden {
+  border-color: transparent;
+  background: transparent;
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition:
+    background 160ms ease-in,
+    border-color 160ms ease-in,
+    backdrop-filter 160ms ease-in,
+    -webkit-backdrop-filter 160ms ease-in;
+}
+
+.nav-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 2px;
+  border: 1px solid var(--chrome-line);
+  background: var(--chrome-btn);
+  color: var(--chrome-btn-ink);
+  font-size: 14px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 120ms, transform 120ms;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand);
+}
+
+.nav-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.progress {
+  width: 120px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--chrome-line);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--brand);
+  transition: width 200ms ease-out;
+}
+
+.counter {
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  min-width: 44px;
+  text-align: center;
+}
+
+.notes-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 2px;
+  border: 1px solid var(--chrome-line);
+  background: transparent;
+  color: var(--chrome-ink);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.notes-btn:hover {
+  border-color: var(--hover-line);
+  background: var(--hover-fill);
+}
+
+/* Hiding the controls keeps their space, so the hide button stays put in the corner. The
+   group fades and slides toward the button as it hides, and back out as it shows; the
+   button itself turns full white so it's easy to find and switch off again. */
+.controls-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition:
+    opacity 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 240ms cubic-bezier(0.23, 1, 0.32, 1),
+    visibility 0s;
+}
+
+.controls.hidden .controls-group {
+  opacity: 0;
+  transform: translateX(16px);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 160ms ease-in,
+    transform 160ms ease-in,
+    visibility 0s linear 160ms;
+}
+
+.hide-btn {
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+  transition: color 160ms;
+}
+
+.hide-btn svg {
+  animation: hide-icon-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@keyframes hide-icon-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controls-group,
+  .controls.hidden .controls-group {
+    transform: none;
+  }
+
+  .hide-btn svg {
+    animation: none;
+  }
+}
+
+.controls.hidden .hide-btn {
+  color: var(--hide-btn-hidden);
+}
+
+/* Slide building blocks */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  flex: 1;
+}
+
+.grid-2,
+.grid-3,
+.grid-4 {
+  display: grid;
+  gap: 20px;
+  flex: 1;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 28px;
+  flex: 1;
+}
+
+.lead {
+  font-size: 26px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 17px;
+  margin: 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 22px 24px;
+}
+
+.card h3 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.card p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--card-ink);
+}
+
+.card.task {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Keep the task cards inside the slide: the images shrink to fit instead of setting
+   the cards' height. */
+.task-stack {
+  min-height: 0;
+}
+
+.task-grid {
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+/* Prompts slide */
+
+/* The Appetizer task: one prompt in a copyable box, over a footer with the task's one
+   rule and the copy button. */
+.copy-box.task-prompt {
+  flex: none;
+  padding: 20px 24px 0;
+}
+
+.task-prompt-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px -24px 0;
+  padding: 14px 24px;
+  border-top: 1px solid var(--line);
+}
+
+.task-prompt-rule {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--warn);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.task-prompt .copy-button {
+  gap: 8px;
+  padding: 8px 16px;
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 16px;
+}
+
+/* Restates the colours, as the shared .copy-button:hover would turn the label yellow on yellow. */
+.task-prompt .copy-button:hover {
+  border-color: color-mix(in srgb, var(--brand), #000 12%);
+  background: color-mix(in srgb, var(--brand), #000 12%);
+  color: var(--on-brand);
+}
+
+.task-prompt .copy-button.copied {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.task-prompt .copy-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.task-prompt .prompt-full {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* The one part of the prompt each group fills in. */
+.prompt-placeholder {
+  padding: 0 2px;
+  border-radius: 2px;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  font-weight: 600;
+}
+
+.task-prompt .prompt-hint {
+  margin: 10px 0 0;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.copy-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 10px 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--inset);
+  flex: 1;
+}
+
+.copy-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-ink);
+}
+
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.copy-button:hover {
+  border-color: var(--brand);
+  color: var(--brand-ink);
+}
+
+.copy-button.copied {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+.card.task .placeholder {
+  margin-top: 16px;
+  min-height: 0;
+  font-size: 15px;
+}
+
+.card.task .task-image {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  margin-top: 16px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* A heavily blurred image. The scale pushes the blur's soft edges outside the frame so
+   the corners stay solid. */
+.card.task .task-image.blurred {
+  overflow: hidden;
+}
+
+.task-image.blurred img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(24px);
+  transform: scale(1.25);
+}
+
+.card.accent {
+  background: var(--brand-soft);
+  border-color: var(--brand-line);
+}
+
+.card.fail {
+  background: var(--fail-soft);
+  border-color: var(--fail-line);
+}
+
+.card.model {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.card.model h3 {
+  font-size: 26px;
+}
+
+/* A full-bleed image behind the card, darkened at the bottom so the text stays white
+   and readable in either theme. Both layers start at the border edge, so the image and
+   the darkening cover the whole card, border included. */
+.card.model.has-image {
+  background-image:
+    linear-gradient(to top, rgb(0 0 0 / 0.85), rgb(0 0 0 / 0.5) 40%, rgb(0 0 0 / 0) 75%),
+    var(--card-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-origin: border-box;
+  border-color: transparent;
+}
+
+.card.model.has-image h3 {
+  color: #fff;
+}
+
+.card.model.has-image p {
+  color: rgb(255 255 255 / 0.85);
+}
+
+.model-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+
+.model-link:hover span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.task-letter {
+  width: 40px;
+  height: 40px;
+  border-radius: 2px;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-weight: 700;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+}
+
+.banner {
+  padding: 14px 20px;
+  border-radius: 4px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.banner.warn {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.banner.info {
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand-line);
+}
+
+.banner.link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  border: 1px solid var(--brand-line);
+  text-decoration: none;
+}
+
+.banner.link:hover {
+  border-color: var(--brand);
+}
+
+/* The new-tab icon sits close to the text it belongs to, 4px off like every other link. */
+.banner.link svg:last-child {
+  margin-left: -8px;
+}
+
+code {
+  font-size: 0.92em;
+  background: var(--code-bg);
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+.bullets {
+  margin: 0;
+  padding-left: 22px;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.bullets li + li {
+  margin-top: 6px;
+}
+
+/* A square as tall as the slide's body, on the left, with a recording beside it */
+.square-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.square-slot {
+  height: 100%;
+  aspect-ratio: 1;
+  background: var(--brand); /* until the recording ends */
+}
+
+.square-slot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.square-slot img.shown {
+  opacity: 1;
+}
+
+.calling-video {
+  height: 100%;
+  min-width: 0;
+  aspect-ratio: 2058 / 2160; /* the recording's own size, so it holds its space before loading */
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .square-slot img {
+    transition: none;
+  }
+}
+
+/* Image MCPs: Scenario's tools and install steps */
+
+.mcp-tool {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mcp-tool.highlight {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+/* Category, then the title and what it does, then the name an agent calls it by */
+.mcp-tool-tags {
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mcp-tool.highlight .mcp-tool-tags {
+  color: var(--brand-ink);
+}
+
+.mcp-tool h3 {
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+
+.mcp-tool p {
+  font-size: 16px;
+}
+
+.mcp-tool-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 16px;
+  color: var(--muted);
+}
+
+.mcp-tool-name code,
+.mcp-command code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+.mcp-tool-name code {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.mcp-foot {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.mcp-foot .model-link {
+  align-self: center;
+  margin-top: 0;
+  padding-top: 0;
+  font-size: 18px;
+}
+
+.mcp-install {
+  padding: 24px 28px;
+}
+
+/* Inline links look like the deck's model links: bold, underlined only on hover */
+.mcp-install a,
+.mcp-more p a {
+  font-weight: 600;
+  color: var(--brand-ink);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.mcp-install a:hover,
+.mcp-more p a:hover {
+  text-decoration: underline;
+}
+
+.mcp-install .mcp-install-lead {
+  margin: 0 0 22px;
+}
+
+.mcp-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.mcp-steps li {
+  position: relative;
+  padding-left: 44px;
+  counter-increment: step;
+}
+
+.mcp-steps li + li {
+  margin-top: 14px;
+}
+
+.mcp-steps li::before {
+  content: counter(step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: grid;
+  place-items: center;
+}
+
+.mcp-command {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  padding: 12px 12px 12px 16px;
+}
+
+.mcp-command code {
+  padding: 0;
+  background: none;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.mcp-more {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 17px;
+  color: var(--muted);
+}
+
+.mcp-more p {
+  margin: 0;
+}
+
+.mcp-more .model-link {
+  margin-top: 0;
+  padding-top: 0;
+  font-size: 17px;
+}
+
+/* Pairings */
+
+.pairs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-content: start;
+}
+
+.pair {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 0 0 4px 4px;
+  padding: 22px 22px 20px;
+}
+
+/* The yellow bar is drawn over the top edge, not as a border, so its ends are square
+   instead of mitred where they meet the grey side borders. */
+.pair::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 3px;
+  background: var(--brand);
+}
+
+.pair h3 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.pair-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.pair-num {
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.pair-credits {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--card-ink);
+}
+
+.pair-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.pair-seats {
+  display: flex;
+}
+
+/* A soft yellow outline on each seat, with a card-coloured ring outside it so the overlap reads. */
+.pair-seats svg {
+  width: 32px;
+  height: 32px;
+  padding: 6.5px;
+  border-radius: 50%;
+  border: 1px solid var(--brand-line);
+  box-shadow: 0 0 0 2px var(--card-solid);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+}
+
+.pair-seats svg + svg {
+  margin-left: -6px;
+}
+
+.pair-foot .model-link {
+  align-self: center;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Placeholder */
+
+.placeholder {
+  border: 2px dashed var(--ph-border);
+  border-radius: 4px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--ph-a),
+    var(--ph-a) 12px,
+    var(--ph-b) 12px,
+    var(--ph-b) 24px
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 18px;
+  min-height: 110px;
+}
+
+.placeholder.tall {
+  flex: 1;
+}
+
+.placeholder-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ph-tag);
+}
+
+/* Levels: a row of mazes that narrow from every possibility to targeted possibilities */
+
+.levels {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 36px;
+}
+
+.levels-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.level {
+  margin: 0;
+}
+
+.level figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.level-num {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-ink);
+}
+
+.level-name {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.level.final .level-name {
+  color: var(--brand-ink);
+}
+
+.levels-axis {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* A line that runs into an arrowhead at the right end. */
+.levels-axis-line {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, var(--maze-open), var(--brand));
+}
+
+.levels-axis-line::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--brand);
+  border-right: 2px solid var(--brand);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* Each level's maze: open cells are possibilities the model can still take, shut cells
+   are ruled out by the prompt. The last level keeps one route, drawn in the brand color. */
+.maze {
+  display: grid;
+  grid-template-columns: repeat(var(--maze-size), 1fr);
+  gap: 2px;
+  aspect-ratio: 1;
+}
+
+.maze-cell {
+  border-radius: 2px;
+  background: var(--maze-shut);
+}
+
+.maze-cell.open {
+  background: var(--maze-open);
+}
+
+.maze-cell.route {
+  background: var(--brand);
+}
+
+/* Bento of mockups */
+
+.bento {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 0.7fr 0.7fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 12px;
+}
+
+.bento img {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.bento-notepad { grid-area: 1 / 1; }
+.bento-notebooks { grid-area: 2 / 1; }
+.bento-tablecloth { grid-area: 1 / 2 / 2 / 4; }
+.bento-ephemeral { grid-area: 2 / 2; }
+.bento-sandbox { grid-area: 2 / 3; }
+.bento-bugs { grid-area: 1 / 4 / 3 / 5; }
+
+/* Card rows with aligned text */
+
+/* The cards share rows, so headings and paragraphs line up across all three even when
+   one heading wraps. The number sits at the top and the text at the bottom. */
+.card-row {
+  grid-template-rows: auto 1fr auto auto;
+  row-gap: 0;
+}
+
+.card-row .card {
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+}
+
+.card-row .task-letter {
+  grid-row: 1;
+}
+
+.card-row h3 {
+  grid-row: 3;
+  align-self: end;
+}
+
+.card-row p {
+  grid-row: 4;
+}
+
+/* Further exploration: three equal columns, each an image over a brand rule, centred in
+   the space below the title. */
+.explore {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+/* The wormhole animation, filling the space above the three columns */
+.explore-panel {
+  flex: 1;
+  min-height: 0;
+}
+
+.explore-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.explore-cols > div {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.explore-text {
+  padding-top: 24px;
+  border-top: 3px solid var(--brand);
+}
+
+.explore-num {
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand-ink);
+}
+
+.explore-cols h3 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.explore-cols p {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Image generation has come a long way: three eras side by side, each a heading over an
+   example of what prompting looked like then. */
+.history {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.history-era {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+}
+
+.history-head {
+  padding-top: 18px;
+  border-top: 3px solid var(--brand);
+}
+
+.history-num {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand-ink);
+}
+
+.history-head h3 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.history-head p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.history-prompt {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--inset);
+}
+
+.history-prompt p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--card-ink);
+}
+
+/* The 2022 prompt as the command it was typed as */
+.history-prompt p.mono {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+}
+
+/* The request to the agent, then what the agent does with it */
+.history-prompt p.history-request {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.history-steps {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--card-ink);
+}
+
+.history-steps code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+/* What still goes to a human: the question in a box of the page's colors, inverted */
+.human {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+.human-question {
+  padding: 40px 56px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--stage);
+  font: inherit;
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  cursor: pointer;
+  transition: transform 200ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .human-question:hover {
+    transform: scale(0.96);
+  }
+}
+
+.human-question span {
+  display: block;
+  transition: opacity 150ms ease-in;
+}
+
+.human-question.answered span {
+  opacity: 0;
+}
+
+/* The answer fills the window, above the stage but under the controls */
+.composition-wall {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+/* The rows, tilted 15°. Twice the window's size each way, so the tilt never shows a corner. */
+.composition-tilt {
+  position: absolute;
+  inset: -50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform: rotate(-15deg);
+}
+
+.composition-row {
+  display: flex;
+  width: max-content;
+  animation: composition-scroll 180s linear infinite;
+}
+
+.composition-row:nth-child(even) {
+  animation-direction: reverse;
+}
+
+.composition-row span {
+  padding-right: calc(36px * var(--stage-scale));
+  font-size: calc(72px * var(--stage-scale));
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* “Creative Direction” rows are outlined only. The variable font's letters are built from
+   overlapping shapes, so a plain stroke traces the joins inside “e” and “t” too. Instead the
+   stroke is painted first at twice the width and the letter filled over it in the wall's
+   color, which hides the inner half and every join, leaving only the outline. */
+.composition-row:nth-child(even) span {
+  color: var(--brand);
+  -webkit-text-stroke: calc(3px * var(--stage-scale)) var(--on-brand);
+  paint-order: stroke fill;
+}
+
+@keyframes composition-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .composition-row {
+    animation: none;
+  }
+}
+
+/* Wormhole animation panel: the canvas fills the box, with film grain on top */
+.wormhole-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--stage);
+}
+
+.wormhole-panel canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* The Image MCPs reveal. The stand-in keeps the explore slide's layout (and its border)
+   while the slide's own entrance is switched off, so the swap from that slide is seamless. */
+.slide:has(.mcp-reveal-hole) {
+  animation: none;
+}
+
+/* The wormhole that grows to fill the window. It sits above the stage but under the controls. */
+.mcp-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--stage);
+}
+
+.mcp-reveal-panel {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* Tones the wormhole down behind the words, as the window backgrounds do */
+.mcp-reveal-shade {
+  position: absolute;
+  inset: 0;
+  background: var(--cipher-overlay);
+}
+
+.mcp-reveal-words {
+  position: relative;
+  margin: 0;
+  font-size: calc(80px * var(--stage-scale));
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.wormhole-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  background-size: 40px;
+  opacity: 0.1;
+}
+
+/* Before and after */
+
+.before-after,
+.gallery {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.before-after-arrow {
+  flex-shrink: 0;
+  color: var(--brand-ink);
+}
+
+.shot {
+  position: relative;
+  height: 100%;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.shot img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+/* Rows that span the full width: the images stretch to fill it and crop to fit.
+   Gallery images share the width equally; before-and-after images share it in
+   proportion to their aspect ratio (--ar), so both crop by the same amount. */
+.gallery.fill .shot,
+.before-after .shot {
+  flex: 1 1 0;
+}
+
+.before-after .shot {
+  flex-grow: var(--ar, 1);
+}
+
+.gallery.fill .shot img,
+.before-after .shot img {
+  width: 100%;
+  max-width: none;
+  object-position: top; /* crop from the bottom: these images keep their key content up top */
+}
+
+/* The reference images, inset in the bottom-left corner of the result they produced. */
+.ref-thumbs {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.before-after .shot .ref-thumbs img {
+  width: 96px;
+  height: 96px;
+  padding: 6px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.4);
+}
+
+/* Swag: the two tees run full height on the right, the logo tee furthest right. To their
+   left, the stickers span two rows beside the booth and the bug cap, with the desk caps
+   along the bottom. Every image crops to fill its cell. */
+.swag {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.6fr 1.6fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    'stickers booth back front'
+    'stickers bugs back front'
+    'ephemeral sandbox back front';
+  gap: 12px;
+}
+
+.swag .shot {
+  height: auto;
+}
+
+.swag figcaption {
+  white-space: nowrap;
+}
+
+.swag .shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* Show every image uncropped, even when the row is too wide for full height. */
+.gallery.whole .shot {
+  border: none;
+  border-radius: 0;
+}
+
+.gallery.whole .shot img {
+  object-fit: contain;
+}
+
+.shot figcaption,
+.prompt-result figcaption {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.6);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Before-and-after shots keep their reference images in the bottom-left corner, so their
+   captions sit at the top instead. */
+.before-after .shot figcaption {
+  top: 10px;
+  bottom: auto;
+}
+
+/* Glass illustrations that take turns in the middle of a shot. Each fades out over 600ms
+   and the next fades in after it, so two never show at once. */
+.glass-cycle {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.gallery .shot .glass-cycle img {
+  grid-area: 1 / 1;
+  width: 72%;
+  height: auto;
+  max-height: 60%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.gallery .shot .glass-cycle img.shown {
+  opacity: 1;
+  transition-delay: 600ms;
+}
+
+/* Poster drop zones */
+
+.poster-grid {
+  min-height: 0;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.poster-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.poster-slot .poster-drop {
+  flex: 1;
+}
+
+.poster-model {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.poster-model select {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.poster-model select:focus-visible {
+  outline: 2px solid var(--brand-ink);
+  outline-offset: 1px;
+}
+
+.poster-drop {
+  position: relative;
+  min-height: 0;
+  border: 2px dashed var(--ph-border);
+  border-radius: 4px;
+  background: var(--card);
+  overflow: hidden;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.poster-drop.filled {
+  border-style: solid;
+  border-color: var(--line);
+}
+
+.poster-drop.dragging {
+  border-color: var(--brand);
+  border-style: dashed;
+  background: var(--brand-soft);
+}
+
+.poster-drop-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+button.poster-drop-empty:hover {
+  background: var(--brand-soft);
+}
+
+.poster-drop-empty svg {
+  color: var(--brand-ink);
+  margin-bottom: 4px;
+}
+
+.poster-drop-hint {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.poster-drop img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.poster-drop-bar {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 24px 10px 10px 14px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: #ffffff;
+}
+
+.poster-drop-label {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.poster-drop-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.poster-drop-actions button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 2px;
+  background: rgba(10, 10, 10, 0.55);
+  color: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.poster-drop-actions button:hover {
+  background: rgba(10, 10, 10, 0.8);
+}
+
+.poster-drop-actions button.primary {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: var(--on-brand);
+}
+
+.poster-drop-actions button.primary:hover {
+  filter: brightness(1.1);
+}
+
+/* Enlarged poster */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.85);
+  animation: lightbox-in 0.18s ease-out;
+}
+
+.lightbox figure {
+  margin: 0;
+}
+
+.lightbox img {
+  display: block;
+  max-width: calc(100vw - 80px);
+  max-height: calc(100vh - 180px);
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.lightbox img.smooth {
+  transition: transform 0.18s ease-out;
+}
+
+.lightbox img.zoomed {
+  cursor: grab;
+}
+
+.lightbox img.panning {
+  cursor: grabbing;
+}
+
+.lightbox img {
+  position: relative;
+  touch-action: none;
+  user-select: none;
+}
+
+.lightbox figcaption {
+  position: fixed;
+  top: 30px;
+  left: 32px;
+  z-index: 1;
+  padding: 6px 12px;
+  border-radius: 2px;
+  background: rgba(10, 10, 10, 0.85);
+  color: #e5e5e5;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  background: rgba(10, 10, 10, 0.85);
+  color: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.lightbox-close:hover {
+  background: rgba(64, 64, 64, 0.95);
+}
+
+.lightbox-zoom {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(10, 10, 10, 0.85);
+}
+
+.lightbox-zoom button {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.lightbox-zoom button.lightbox-fit {
+  font-size: 15px;
+  font-weight: 600;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0 2px 2px 0;
+  margin-left: 4px;
+}
+
+.lightbox-zoom button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.lightbox-zoom button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.lightbox-zoom-level {
+  min-width: 56px;
+  color: #e5e5e5;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox {
+    animation: none;
+  }
+
+  .lightbox img.smooth {
+    transition: none;
+  }
+}
+
+/* Cover */
+
+.cover {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cover.centered {
+  align-items: center;
+  text-align: center;
+}
+
+.cover.centered .cover-title {
+  margin: 0;
+}
+
+/* The closing slides: smaller than the cover's title, so a full sentence fits. */
+.cover-title.statement {
+  font-size: 72px;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+/* The logo sits in the slide's top-left corner, on the same margins as other slides'
+   section labels. Its wordmark is white for dark mode; light mode swaps in a dark copy. */
+.cover-logo {
+  position: absolute;
+  top: 48px;
+  left: 72px;
+  height: 30px;
+  width: auto;
+}
+
+.cover-logo.for-light,
+:root[data-theme='light'] .cover-logo.for-dark {
+  display: none;
+}
+
+:root[data-theme='light'] .cover-logo.for-light {
+  display: block;
+}
+
+.cover-title {
+  font-family: var(--font-display);
+  font-size: 104px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 18px 0 24px;
+}
+
+.cover-byline {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 56px;
+  padding-left: 18px;
+  border-left: 3px solid var(--brand);
+}
+
+.cover-name {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.cover-role {
+  font-size: 18px;
+  color: var(--muted);
+}
+
+/* Run of show */
+
+.schedule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+}
+
+.schedule-list li {
+  display: grid;
+  grid-template-columns: 36px 260px 1fr;
+  align-items: center;
+  gap: 20px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 22px;
+}
+
+.schedule-list li:last-child {
+  border-bottom: none;
+}
+
+.schedule-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 2px;
+  display: grid;
+  place-items: center;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.schedule-name {
+  font-weight: 600;
+}
+
+.schedule-detail {
+  color: var(--card-ink);
+}
+
+/* A single line of large text that fills the slide body. */
+.statement {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 120px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+/* Round 1 share-out: the number sits at the top, the question at the bottom. */
+.share .card {
+  display: flex;
+  flex-direction: column;
+}
+
+.share .task-letter {
+  margin-bottom: auto;
+}
+
+/* Annotated prompt */
+
+.annotated-prompt {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+/* Every part gets the same soft highlight; hovering a card brightens one and fades the rest. */
+.seg {
+  background: var(--brand-soft);
+  border-bottom: 2px solid var(--brand-line);
+  padding: 2px 4px;
+  margin-right: 6px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.seg .seg-num {
+  margin-right: 6px;
+  vertical-align: 2px;
+}
+
+.seg-num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 4px;
+  border-radius: 2px;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The prompt in full across the top, then one card per part underneath. */
+.prompt-top {
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 16px;
+}
+
+.prompt-whole .annotated-prompt {
+  font-size: 20px;
+  line-height: 1.8;
+}
+
+/* Hovering a part card picks out its part of the prompt and fades the others. */
+.prompt-whole .seg {
+  transition:
+    opacity 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.prompt-whole .has-active .seg:not(.active) {
+  opacity: 0.3;
+}
+
+.prompt-whole .seg.active {
+  background: var(--brand-soft);
+  border-bottom-color: var(--brand);
+}
+
+.prompt-parts .card.active {
+  border-color: var(--brand);
+}
+
+/* What the prompt produced, cropped to the height of the prompt beside it. */
+.prompt-result {
+  position: relative;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.prompt-result img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Cards share rows, so every number, heading and description starts at the same height
+   even when a heading wraps or one description runs longer than the others. */
+.prompt-parts {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: auto auto 1fr;
+  column-gap: 16px;
+  flex: 1;
+}
+
+.prompt-parts .card {
+  transition: border-color 150ms ease;
+  grid-row: 1 / -1;
+  display: grid;
+  grid-template-rows: subgrid;
+  padding: 20px;
+}
+
+.prompt-parts .seg-num {
+  justify-self: start;
+  margin-bottom: 14px;
+}
+
+.prompt-parts h3 {
+  margin-bottom: 8px;
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.prompt-parts p {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* Competition brief */
+
+/* The brief table, with the blank tees to download stacked to its right. */
+.brief {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.brief .brief-list {
+  flex: 1;
+  min-width: 0;
+}
+
+.tee-downloads {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* The tees sit on the theme's card surface like the deck's other cards, each lit by a soft
+   spotlight so the black shirt still reads on the dark theme. */
+.tee-download {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--card);
+}
+
+.tee-download img {
+  display: block;
+  height: 120px;
+  margin: 0 auto 8px;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.22), transparent);
+}
+
+/* Both logos have white wordmarks, so they sit on a dark plate in either theme. */
+.logo-downloads {
+  width: 260px;
+}
+
+.logo-downloads .tee-download img {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  padding: 20px 18px;
+  border-radius: 2px;
+  background: #0a0a0a;
+}
+
+.tee-download-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tee-download-foot a {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.tee-download-foot a:hover {
+  border-color: var(--brand);
+  color: var(--ink);
+}
+
+.brief-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.brief-list > div {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.brief-list dt {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 4px;
+}
+
+.brief-list dd {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.inline-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  font-size: 18px;
+  color: var(--brand-ink);
+  text-decoration: none;
+}
+
+.inline-link:hover {
+  text-decoration: underline;
+}
+
+.color-note {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0 2px;
+  border-radius: 2px;
+  vertical-align: -0.05em;
+}
+
+.idea-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.idea-tags span {
+  padding: 2px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 18px;
+}
+

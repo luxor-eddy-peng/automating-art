@@ -1,5 +1,6 @@
 :root {
   --font-sans: 'Inter Tight Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --bg: #f5f5f5;
   --stage: #ffffff;
   --ink: #0a0a0a;
@@ -29,8 +30,8 @@
   --chrome-btn-ink: #0a0a0a;
   --chrome-line: #d4d4d4;
   --notes-muted: #666666;
-  --maze-open: #e5e5e5;
-  --maze-shut: #1a1a1a;
+  --maze-open: #a3a3a3;
+  --maze-shut: #ededed;
   --cipher-overlay: rgba(255, 255, 255, 0.4);
   --cipher-overlay-dim: rgba(255, 255, 255, 0.8);
   --logo3d-bg: #ffffff;
@@ -290,6 +291,7 @@ select {
    stay the same size relative to the slide. */
 .slide-footer {
   position: fixed;
+  z-index: 2;
   right: calc(16px * var(--stage-scale));
   bottom: calc(16px * var(--stage-scale));
   display: flex;
@@ -543,35 +545,79 @@ select {
 
 /* Prompts slide */
 
-/* The prompts: one card per task, each prompt and edit in its own copyable box. */
-.prompt-cards {
-  min-height: 0;
+/* The Appetizer task: one prompt in a copyable box, over a footer with the task's one
+   rule and the copy button. */
+.copy-box.task-prompt {
+  flex: none;
+  padding: 20px 24px 0;
 }
 
-.prompt-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px;
-}
-
-.prompt-head {
+.task-prompt-foot {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px -24px 0;
+  padding: 14px 24px;
+  border-top: 1px solid var(--line);
 }
 
-.prompt-head .task-letter {
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  font-size: 14px;
-  margin: 0;
+.task-prompt-rule {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--warn);
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.prompt-head h3 {
+.task-prompt .copy-button {
+  gap: 8px;
+  padding: 8px 16px;
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 16px;
+}
+
+/* Restates the colours, as the shared .copy-button:hover would turn the label yellow on yellow. */
+.task-prompt .copy-button:hover {
+  border-color: color-mix(in srgb, var(--brand), #000 12%);
+  background: color-mix(in srgb, var(--brand), #000 12%);
+  color: var(--on-brand);
+}
+
+.task-prompt .copy-button.copied {
+  border-color: var(--ok);
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+
+.task-prompt .copy-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.task-prompt .prompt-full {
   margin: 0;
-  font-size: 20px;
+  font-size: 24px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* The one part of the prompt each group fills in. */
+.prompt-placeholder {
+  padding: 0 2px;
+  border-radius: 2px;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  font-weight: 600;
+}
+
+.task-prompt .prompt-hint {
+  margin: 10px 0 0;
+  font-size: 16px;
+  color: var(--muted);
 }
 
 .copy-box {
@@ -582,10 +628,6 @@ select {
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--inset);
-}
-
-/* The prompt box takes the spare height, so the edit boxes line up across cards. */
-.copy-box:not(.edit) {
   flex: 1;
 }
 
@@ -598,22 +640,6 @@ select {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--brand-ink);
-}
-
-.prompt-card .prompt-full {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.3;
-  color: var(--ink);
-}
-
-/* Room for two lines in every card, so the edit boxes match in height. */
-.prompt-card .prompt-edit {
-  margin: 0;
-  min-height: 2.8em;
-  font-size: 14px;
-  line-height: 1.4;
-  color: var(--card-ink);
 }
 
 .copy-button {
@@ -685,9 +711,23 @@ select {
 }
 
 .card.model {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+}
+
+/* Why a model went unused, pinned to the card's top-left corner in the caption style. */
+.model-note {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 4px 10px;
+  border-radius: 2px;
+  background: rgb(0 0 0 / 0.6);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .card.model h3 {
@@ -719,7 +759,7 @@ select {
 .model-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   align-self: flex-start;
   margin-top: auto;
   padding-top: 14px;
@@ -766,6 +806,16 @@ select {
   border: 1px solid var(--brand-line);
 }
 
+/* A small heading on its own line above the banner text, styled like the section label. */
+.banner-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
 .banner.link {
   display: flex;
   align-items: center;
@@ -778,6 +828,11 @@ select {
 
 .banner.link:hover {
   border-color: var(--brand);
+}
+
+/* The new-tab icon sits close to the text it belongs to, 4px off like every other link. */
+.banner.link svg:last-child {
+  margin-left: -8px;
 }
 
 code {
@@ -798,6 +853,208 @@ code {
   margin-top: 6px;
 }
 
+/* A square as tall as the slide's body, on the left, with a recording beside it */
+.square-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.square-slot {
+  height: 100%;
+  aspect-ratio: 1;
+  background: var(--brand); /* until the recording ends */
+}
+
+.square-slot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.square-slot img.shown {
+  opacity: 1;
+}
+
+.calling-video {
+  height: 100%;
+  min-width: 0;
+  aspect-ratio: 2058 / 2160; /* the recording's own size, so it holds its space before loading */
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .square-slot img {
+    transition: none;
+  }
+}
+
+/* Image MCPs: Scenario's tools and install steps */
+
+.mcp-tool {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mcp-tool.highlight {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+/* Category, then the title and what it does, then the name an agent calls it by */
+.mcp-tool-tags {
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.mcp-tool.highlight .mcp-tool-tags {
+  color: var(--brand-ink);
+}
+
+.mcp-tool h3 {
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+
+.mcp-tool p {
+  font-size: 16px;
+}
+
+.mcp-tool-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 16px;
+  color: var(--muted);
+}
+
+.mcp-tool-name code,
+.mcp-command code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+.mcp-tool-name code {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.mcp-foot {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.mcp-foot .model-link {
+  align-self: center;
+  margin-top: 0;
+  padding-top: 0;
+  font-size: 18px;
+}
+
+.mcp-install {
+  padding: 24px 28px;
+}
+
+/* Inline links look like the deck's model links: bold, underlined only on hover */
+.mcp-install a,
+.mcp-more p a {
+  font-weight: 600;
+  color: var(--brand-ink);
+  text-decoration: none;
+  text-underline-offset: 3px;
+}
+
+.mcp-install a:hover,
+.mcp-more p a:hover {
+  text-decoration: underline;
+}
+
+.mcp-install .mcp-install-lead {
+  margin: 0 0 22px;
+}
+
+.mcp-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.mcp-steps li {
+  position: relative;
+  padding-left: 44px;
+  counter-increment: step;
+}
+
+.mcp-steps li + li {
+  margin-top: 14px;
+}
+
+.mcp-steps li::before {
+  content: counter(step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 2px;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  display: grid;
+  place-items: center;
+}
+
+.mcp-command {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  padding: 12px 12px 12px 16px;
+}
+
+.mcp-command code {
+  padding: 0;
+  background: none;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.mcp-more {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 17px;
+  color: var(--muted);
+}
+
+.mcp-more p {
+  margin: 0;
+}
+
+.mcp-more .model-link {
+  margin-top: 0;
+  padding-top: 0;
+  font-size: 17px;
+}
+
 /* Pairings */
 
 .pairs {
@@ -808,30 +1065,58 @@ code {
 }
 
 .pair {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-top: 3px solid var(--brand);
-  border-radius: 4px;
-  padding: 20px 22px;
+  border-radius: 0 0 4px 4px;
+  padding: 22px 22px 20px;
 }
 
-.pair-head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+/* The yellow bar is drawn over the top edge, not as a border, so its ends are square
+   instead of mitred where they meet the grey side borders. */
+.pair::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 3px;
+  background: var(--brand);
 }
 
-.pair-head .task-letter {
-  margin-bottom: 0;
-  flex-shrink: 0;
+.card.model.unavailable {
+  opacity: 0.5;
+}
+
+/* A model that offered no free credits on the day: shown last, greyed out and unnumbered. */
+.pair.unavailable {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.pair.unavailable::before {
+  background: var(--line);
 }
 
 .pair h3 {
   margin: 0;
   font-size: 26px;
+}
+
+.pair-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.pair-num {
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
 }
 
 .pair-credits {
@@ -846,26 +1131,27 @@ code {
   align-items: center;
   justify-content: space-between;
   margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
+  padding-top: 8px;
 }
 
 .pair-seats {
   display: flex;
 }
 
+/* A soft yellow outline on each seat, with a card-coloured ring outside it so the overlap reads. */
 .pair-seats svg {
   width: 32px;
   height: 32px;
-  padding: 7px;
+  padding: 6.5px;
   border-radius: 50%;
-  border: 2px solid var(--card-solid);
+  border: 1px solid var(--brand-line);
+  box-shadow: 0 0 0 2px var(--card-solid);
   background: var(--brand-soft);
   color: var(--brand-ink);
 }
 
 .pair-seats svg + svg {
-  margin-left: -8px;
+  margin-left: -6px;
 }
 
 .pair-foot .model-link {
@@ -1118,6 +1404,191 @@ code {
   color: var(--muted);
 }
 
+/* Image generation has come a long way: three eras side by side, each a heading over an
+   example of what prompting looked like then. */
+.history {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.history-era {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+}
+
+.history-head {
+  padding-top: 18px;
+  border-top: 3px solid var(--brand);
+}
+
+.history-num {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--brand-ink);
+}
+
+.history-head h3 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+.history-head p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.history-prompt {
+  flex: 1;
+  min-height: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--inset);
+}
+
+.history-prompt p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--card-ink);
+}
+
+/* The 2022 prompt as the command it was typed as */
+.history-prompt p.mono {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+}
+
+/* The request to the agent, then what the agent does with it */
+.history-prompt p.history-request {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.history-steps {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--card-ink);
+}
+
+.history-steps code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+/* What still goes to a human: the question in a box of the page's colors, inverted */
+.human {
+  flex: 1;
+  display: grid;
+  place-items: center;
+}
+
+.human-question {
+  padding: 40px 56px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--ink);
+  color: var(--stage);
+  font: inherit;
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  cursor: pointer;
+  transition: transform 200ms ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .human-question:hover {
+    transform: scale(0.96);
+  }
+}
+
+.human-question span {
+  display: block;
+  transition: opacity 150ms ease-in;
+}
+
+.human-question.answered span {
+  opacity: 0;
+}
+
+/* The answer fills the window, above the stage but under the controls */
+.composition-wall {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+/* The rows, tilted 15°. Twice the window's size each way, so the tilt never shows a corner. */
+.composition-tilt {
+  position: absolute;
+  inset: -50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform: rotate(-15deg);
+}
+
+.composition-row {
+  display: flex;
+  width: max-content;
+  animation: composition-scroll 180s linear infinite;
+}
+
+.composition-row:nth-child(even) {
+  animation-direction: reverse;
+}
+
+.composition-row span {
+  padding-right: calc(36px * var(--stage-scale));
+  font-size: calc(72px * var(--stage-scale));
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* “Creative Direction” rows are outlined only. The variable font's letters are built from
+   overlapping shapes, so a plain stroke traces the joins inside “e” and “t” too. Instead the
+   stroke is painted first at twice the width and the letter filled over it in the wall's
+   color, which hides the inner half and every join, leaving only the outline. */
+.composition-row:nth-child(even) span {
+  color: var(--brand);
+  -webkit-text-stroke: calc(3px * var(--stage-scale)) var(--on-brand);
+  paint-order: stroke fill;
+}
+
+@keyframes composition-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .composition-row {
+    animation: none;
+  }
+}
+
 /* Wormhole animation panel: the canvas fills the box, with film grain on top */
 .wormhole-panel {
   position: relative;
@@ -1133,6 +1604,46 @@ code {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* The Image MCPs reveal. The stand-in keeps the explore slide's layout (and its border)
+   while the slide's own entrance is switched off, so the swap from that slide is seamless. */
+.slide:has(.mcp-reveal-hole) {
+  animation: none;
+}
+
+/* The wormhole that grows to fill the window. It sits above the stage but under the controls. */
+.mcp-reveal {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--stage);
+}
+
+.mcp-reveal-panel {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* Tones the wormhole down behind the words, as the window backgrounds do */
+.mcp-reveal-shade {
+  position: absolute;
+  inset: 0;
+  background: var(--cipher-overlay);
+}
+
+.mcp-reveal-words {
+  position: relative;
+  margin: 0;
+  font-size: calc(80px * var(--stage-scale));
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
 }
 
 .wormhole-grain {
@@ -1246,6 +1757,100 @@ code {
   inset: 0;
   width: 100%;
   height: 100%;
+  max-width: none;
+}
+
+/* Group results, in the same three-by-two order as the pairings. Every image crops to
+   fill its cell, and its caption covers the tool's own watermark. */
+.results {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.results .shot {
+  height: auto;
+}
+
+/* Competition submissions: the winner runs full width and takes whatever height the row
+   below leaves it, cropping only its empty top and bottom. */
+.submissions {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.submissions-winner {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+
+.submissions .shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* Widths grow in proportion to each image's aspect ratio, so every image shares one
+   height and none of them crop. */
+.submissions-row {
+  display: flex;
+  gap: 12px;
+}
+
+.submissions-row .shot {
+  flex: var(--ar) 1 0;
+  height: auto;
+  aspect-ratio: var(--ar);
+}
+
+.winner-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 2px;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.4);
+}
+
+/* A model nobody ran: an empty, greyed-out cell, like its card on the pairings slide. */
+.results .shot.untested {
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.results .shot.untested span {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Each image runs 24px past the bottom of its cell, which cuts off the tool's watermark
+   where a caption alone doesn't cover it. */
+.results .shot img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 24px);
   max-width: none;
 }
 
@@ -1637,6 +2242,13 @@ button.poster-drop-empty:hover {
   margin: 0;
 }
 
+/* The closing slides: smaller than the cover's title, so a full sentence fits. */
+.cover-title.statement {
+  font-size: 72px;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
 /* The logo sits in the slide's top-left corner, on the same margins as other slides'
    section labels. Its wordmark is white for dark mode; light mode swaps in a dark copy. */
 .cover-logo {
@@ -1657,17 +2269,12 @@ button.poster-drop-empty:hover {
 }
 
 .cover-title {
+  font-family: var(--font-display);
   font-size: 104px;
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
   margin: 18px 0 24px;
-}
-
-.cover-sub {
-  font-size: 28px;
-  color: var(--muted);
-  max-width: 760px;
 }
 
 .cover-byline {
@@ -1703,7 +2310,7 @@ button.poster-drop-empty:hover {
 
 .schedule-list li {
   display: grid;
-  grid-template-columns: 36px 260px 1fr auto;
+  grid-template-columns: 36px 260px 1fr;
   align-items: center;
   gap: 20px;
   padding: 13px 0;
@@ -1733,11 +2340,6 @@ button.poster-drop-empty:hover {
 
 .schedule-detail {
   color: var(--card-ink);
-}
-
-.schedule-min {
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
 }
 
 /* A single line of large text that fills the slide body. */
@@ -1923,6 +2525,20 @@ button.poster-drop-empty:hover {
   height: 120px;
   margin: 0 auto 8px;
   background: radial-gradient(closest-side, rgb(255 255 255 / 0.22), transparent);
+}
+
+/* Both logos have white wordmarks, so they sit on a dark plate in either theme. */
+.logo-downloads {
+  width: 260px;
+}
+
+.logo-downloads .tee-download img {
+  box-sizing: border-box;
+  width: 100%;
+  height: auto;
+  padding: 20px 18px;
+  border-radius: 2px;
+  background: #0a0a0a;
 }
 
 .tee-download-foot {

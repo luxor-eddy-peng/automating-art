@@ -3,7 +3,7 @@
 // recolored to Luxor gold and painted on the inside of a tunnel that you fly down. In
 // luxor-bg it filled the window; here it fills whatever box it's placed in. Only the
 // wormhole is kept; the other tabs, scroll scrubbing and iframes are left out.
-import { useEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { deckTheme, watchDeckTheme } from './deckTheme.js'
 import noise from './assets/noise.png'
 
@@ -214,6 +214,14 @@ const themeVector = (name) => {
   }
 }
 
+// The animation's clocks live outside the component so a panel that mounts as another
+// unmounts (the explore slide handing over to the Image MCPs reveal) carries on from the
+// same frame instead of starting over.
+const timeline = {
+  totalTime: CONFIG.offset * 10 * 8.333333333333334, // seed → starting time offset (ms), as Paper Shaders does it
+  clock: 0, // tunnel clock (ms)
+}
+
 const lerp = (a, b, k) =>
   Object.fromEntries(Object.keys(a).map((key) => [key, a[key].map((v, i) => v + (b[key][i] - v) * k)]))
 
@@ -221,7 +229,8 @@ const lerp = (a, b, k) =>
 export default function WormholePanel({ className = '' }) {
   const wrapRef = useRef(null)
 
-  useEffect(() => {
+  // A layout effect, so the first frame is drawn before the panel is ever painted empty.
+  useLayoutEffect(() => {
     // A fresh canvas per mount: its context is released on unmount, and a released
     // context can't be reused (React's dev mode mounts effects twice).
     const canvas = document.createElement('canvas')
@@ -293,7 +302,8 @@ export default function WormholePanel({ className = '' }) {
       canvas.height = height
       gl.viewport(0, 0, width, height)
       gl.uniform2f(loc('u_resolution'), width, height)
-      if (reduceMotion) draw(performance.now())
+      // Resizing clears the canvas, so redraw now rather than paint a blank frame.
+      draw(performance.now())
     }
     const observer = new ResizeObserver(resize)
     observer.observe(canvas)
@@ -320,9 +330,6 @@ export default function WormholePanel({ className = '' }) {
       if (reduceMotion) draw(performance.now())
     })
 
-    // Seed → starting time offset (ms), exactly as Paper Shaders does it
-    let totalTime = c.offset * 10 * 8.333333333333334
-    let clock = 0 // tunnel clock (ms)
     let last = performance.now()
     let raf = 0
 
@@ -330,8 +337,8 @@ export default function WormholePanel({ className = '' }) {
       const dt = Math.min(now - last, 100) // avoid a jump after the tab was in the background
       last = now
       if (!reduceMotion) {
-        totalTime += dt * c.speed
-        clock += dt
+        timeline.totalTime += dt * c.speed
+        timeline.clock += dt
       }
       if (fade) {
         const k = reduceMotion ? 1 : Math.min((now - fade.start) / c.themeTransition, 1)
@@ -339,8 +346,8 @@ export default function WormholePanel({ className = '' }) {
         uploadTheme(current)
         if (k === 1) fade = null
       }
-      gl.uniform1f(loc('u_time'), totalTime * 0.001)
-      gl.uniform1f(loc('u_clock'), clock * 0.001)
+      gl.uniform1f(loc('u_time'), timeline.totalTime * 0.001)
+      gl.uniform1f(loc('u_clock'), timeline.clock * 0.001)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
     }
 
@@ -349,9 +356,8 @@ export default function WormholePanel({ className = '' }) {
       raf = requestAnimationFrame(frame)
     }
     resize()
-    // With reduced motion, draw one still frame (and redraw on theme changes) instead of animating.
-    if (reduceMotion) draw(performance.now())
-    else raf = requestAnimationFrame(frame)
+    // With reduced motion, the frame resize() drew stays (redrawn on theme changes) instead of animating.
+    if (!reduceMotion) raf = requestAnimationFrame(frame)
 
     return () => {
       cancelAnimationFrame(raf)
